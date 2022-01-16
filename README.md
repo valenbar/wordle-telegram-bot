@@ -9,3 +9,5 @@ A telegram bot for playing wordles
 - [ ] Feature to change board size
 - [ ] Add resources.txt
 - [ ] maybe a simpler word pool
+- [ ] better logging
+
