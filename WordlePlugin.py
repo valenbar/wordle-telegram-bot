@@ -69,26 +69,19 @@ class Wordle():
 
     def check_rules(self, word: str) -> (Outcome):
         if word == "":
-            print("You didn't enter anything!")
             return Outcome.WRONG
         elif word == self.target_word:
-            print("Correct!")
             self.state = GameState.WON
             return Outcome.FINISHED
         elif word in self.guessed_words:
-            print("You already guessed that!")
             return Outcome.WRONG
         elif len(word) != self.board_x:
-            print("Word lenght is not correct")
             return Outcome.WRONG
         elif word in self.wordle_dict[f"words_{self.board_x}"]:
-            print("Not the right word")
             return Outcome.PROGRESS
         elif word not in self.wordle_dict[f"words_{self.board_x}"]:
-            print("Word not in dictionary")
             return Outcome.WRONG
         else:
-            print("Something went wrong")
             return Outcome.WRONG
 
 
