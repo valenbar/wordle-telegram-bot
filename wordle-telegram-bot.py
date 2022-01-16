@@ -54,8 +54,11 @@ def start_game(update: Update, context: CallbackContext) -> (None):
     img.save("out.png")
     img = open("./out.png", "rb")
 #     update.message.reply_text(wordle.target_word)
-    img_msg = update.message.reply_photo(img)
-    context.user_data["img_msg"] = img_msg.message_id
+    board_img_msg = update.message.reply_photo(img)
+    board_desc_msg = update.message.reply_text("Good luck!")
+
+    context.user_data["board_img_msg"] = board_img_msg.message_id
+    context.user_data["board_desc_msg"] = board_desc_msg
     logger.info(f"{update.message.from_user.first_name} started a new game word: " + wordle.target_word)
 
 
@@ -77,19 +80,25 @@ def check_word(update: Update, context: CallbackContext) -> (None):
     if img is not None:
         img.save("out.png")
         img = open("./out.png", "rb")
-        context.bot.delete_message(message_id=context.user_data["img_msg"], chat_id=update.message.chat_id)
-        context.user_data["img_msg"] = update.message.reply_photo(img).message_id
-        # update.edit_message_media(chat_id=update.message.chat_id, message_id=context.user_data["img_msg"], media=img)
-        # context.user_data["img_msg"].
+        context.bot.delete_message(message_id=context.user_data["board_img_msg"], chat_id=update.message.chat_id)
+        context.user_data.get("board_desc_msg").delete()
+        # context.bot.delete_message(message_id=context.user_data["board_desc_msg"].message_id, chat_id=update.message.chat_id)
+        context.user_data["board_img_msg"] = update.message.reply_photo(img).message_id
+        context.user_data["board_desc_msg"] = update.message.reply_text("That looks good!")
+        # update.edit_message_media(chat_id=update.message.chat_id, message_id=context.user_data["board_img_msg"], media=img)
+        # context.user_data["board_img_msg"].
     # else:
     if wordle.state == GameState.LOST:
         logger.info(f"{update.message.from_user.first_name} lost the game")
-        update.message.reply_text(f"You lost, the word was: {wordle.target_word}\nStart a new one with /new")
+        context.user_data.get("board_img_msg").edit_text(f"You lost, the word was: {wordle.target_word}\nStart a new one with /new")
+        # update.message.reply_text(f"You lost, the word was: {wordle.target_word}\nStart a new one with /new")
     if wordle.state == GameState.WON:
         logger.info(f"{update.message.from_user.first_name} won the game")
-        update.message.reply_text("You won the game! Start a new one with /new")
+        context.user_data.get("board_desc_msg").edit_text(f"You won, the word was: {wordle.target_word}\nStart a new one with /new")
+        # update.message.reply_text("You won the game! Start a new one with /new")
     if wordle.state == GameState.PLAYING and img is None:
-        update.message.reply_text("Try another word")
+        # update.message.reply_text("Try another word")
+        context.user_data.get("board_desc_msg").edit_text("Try another word")
     if wordle.state == GameState.INIT:
         update.message.reply_text("You need to start a game first! you can use /new")
 
