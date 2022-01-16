@@ -32,7 +32,7 @@ def start_game(update: Update, context: CallbackContext) -> (None):
     img = wordle.new_game(x=5, y=6, lan="en")
     img.save("out.png")
     img = open("./out.png", "rb")
-    update.message.reply_text(wordle.target_word)
+#     update.message.reply_text(wordle.target_word)
     img_msg = update.message.reply_photo(img)
     context.user_data["img_msg"] = img_msg.message_id
     logger.info(f"{update.message.from_user.first_name} started a new game word: " + wordle.target_word)
@@ -62,7 +62,7 @@ def check_word(update: Update, context: CallbackContext) -> (None):
     # else:
     if wordle.state == GameState.LOST:
         logger.info(f"{update.message.from_user.first_name} lost the game")
-        update.message.reply_text("You lost the game! Start a new one with /new")
+        update.message.reply_text(f"You lost, the word was: {wordle.target_word}\nStart a new one with /new")
     if wordle.state == GameState.WON:
         logger.info(f"{update.message.from_user.first_name} won the game")
         update.message.reply_text("You won the game! Start a new one with /new")
