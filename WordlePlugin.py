@@ -29,15 +29,15 @@ class Wordle():
     export: ImageExport
 
 
-    def __init__(self):
-        # super(Wordle, self).__init__(*args)
-        # self.board_x = x
-        # self.board_y = y
-        with open('./res/wordle_dict.json', 'r') as f:
+    def __init__(self, language: str):
+        with open(f"./res/wordle_dict_{language}.json", "r") as f:
             self.wordle_dict = json.load(f)
+        # with open('./res/wordle_dict.json', 'r') as f:
+        #     self.wordle_dict = json.load(f)
 
 
-    def new_game(self, x: int, y: int, lan: str):
+
+    def new_game(self, x: int, y: int):
         self.board_x = x
         self.board_y = y
         self.target_word = random.choice(self.wordle_dict["words_" + str(x)])

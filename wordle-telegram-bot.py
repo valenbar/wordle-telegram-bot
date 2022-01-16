@@ -27,9 +27,9 @@ def start(update: Update, context: CallbackContext) -> (None):
 
 def start_game(update: Update, context: CallbackContext) -> (None):
     """Starts a new game"""
-    wordle = Wordle()
+    wordle = Wordle('german')
     context.user_data["wordle"] = wordle
-    img = wordle.new_game(x=5, y=6, lan="en")
+    img = wordle.new_game(x=5, y=6)
     img.save("out.png")
     img = open("./out.png", "rb")
 #     update.message.reply_text(wordle.target_word)
