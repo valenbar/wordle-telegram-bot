@@ -4,8 +4,8 @@ import logging
 from dotenv import load_dotenv
 import os
 
-from telegram import Update, ForceReply
-from telegram.ext import Updater, CommandHandler, MessageHandler, Filters, CallbackContext, PicklePersistence
+from telegram import Update, ForceReply, InlineKeyboardButton, InlineKeyboardMarkup
+from telegram.ext import Updater, CommandHandler, MessageHandler, Filters, CallbackContext, PicklePersistence, CallbackQueryHandler
 
 from WordlePlugin import Wordle, GameState
 # from ImageExport import ImageExport
@@ -23,11 +23,32 @@ logger = logging.getLogger(__name__)
 def start(update: Update, context: CallbackContext) -> (None):
     """Send a message when the command /start is issued."""
     update.message.reply_text(f'Hi {update.message.from_user.first_name}!')
+    context.user_data["name"] = update.message.from_user.first_name
     help_command(update, context)
+
+def change_language(update: Update, context: CallbackContext) -> (None):
+    """show buttons to choose a language"""
+    query = update.callback_query
+    InlineKeyboard = [
+        [InlineKeyboardButton("German", callback_data="set_lan:german")],
+        [InlineKeyboardButton("English", callback_data="set_lan:english")]
+    ]
+    if query == None:
+        msg_out = f"Choose a language, current language is: " + context.user_data.get("language", "german")
+        update.message.reply_text(text=msg_out, reply_markup=InlineKeyboardMarkup(InlineKeyboard))
+    elif query.data.split(":")[1] == context.user_data.get("language"):
+        query.answer()
+    else:
+        query.answer()
+        context.user_data["language"] = query.data.split(":")[1]
+        logging.info("%s changed language to %s", context.user_data.get('name'), query.data.split(':')[1])
+        msg_out = f"Choose a language, current language is: " + context.user_data.get("language", "german")
+        query.edit_message_text(text=msg_out + "\nstart a new game with /new", reply_markup=InlineKeyboardMarkup(InlineKeyboard))
+
 
 def start_game(update: Update, context: CallbackContext) -> (None):
     """Starts a new game"""
-    wordle = Wordle('german')
+    wordle = Wordle(context.user_data.get("language", "german"))
     context.user_data["wordle"] = wordle
     img = wordle.new_game(x=5, y=6)
     img.save("out.png")
@@ -36,6 +57,7 @@ def start_game(update: Update, context: CallbackContext) -> (None):
     img_msg = update.message.reply_photo(img)
     context.user_data["img_msg"] = img_msg.message_id
     logger.info(f"{update.message.from_user.first_name} started a new game word: " + wordle.target_word)
+
 
 def check_word(update: Update, context: CallbackContext) -> (None):
     logger.info(f"{update.message.from_user.first_name} guessed {update.message.text}")
@@ -89,6 +111,8 @@ def main() -> (None):
     dispatcher.add_handler(CommandHandler("start", start))
     dispatcher.add_handler(CommandHandler("help", help_command))
     dispatcher.add_handler(CommandHandler("new", start_game))
+    dispatcher.add_handler(CommandHandler("language", change_language))
+    dispatcher.add_handler(CallbackQueryHandler(change_language, pattern="set_lan:.*"))
 
     # on non command i.e message - echo the message on Telegram
     dispatcher.add_handler(MessageHandler(Filters.text & ~Filters.command, check_word))
