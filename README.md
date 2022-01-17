@@ -9,5 +9,5 @@ A telegram bot for playing wordles
 - [ ] Feature to change board size
 - [ ] Add resources.txt
 - [ ] maybe a simpler word pool
-- [ ] better logging
-
+  - [ ] keep big dictionary for checking if word exists, use small dictionary for target word
+- [ ] Add report word function
