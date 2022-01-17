@@ -5,9 +5,7 @@ A telegram bot for playing wordles
 
 ## TODO
 
-- [ ] Feature to change language
+- [x] Feature to change language
+- [x] maybe a simpler word pool
 - [ ] Feature to change board size
 - [ ] Add resources.txt
-- [ ] maybe a simpler word pool
-  - [ ] keep big dictionary for checking if word exists, use small dictionary for target word
-- [ ] Add report word function
