@@ -20,6 +20,7 @@ class GameState(enum.Enum):
 class Wordle():
 
     wordle_dict = { "words_3": [], "words_4": [], "words_5": [], "words_6": [], "words_7": [] }
+    wordle_dict_small = { "words_3": [], "words_4": [], "words_5": [], "words_6": [], "words_7": [] }
     board_x: int
     board_y: int
     target_word: str
@@ -32,6 +33,8 @@ class Wordle():
     def __init__(self, language: str):
         with open(f"./res/wordle_dict_{language}.json", "r") as f:
             self.wordle_dict = json.load(f)
+        with open(f"./res/wordle_dict_small_{language}.json", "r") as f:
+            self.wordle_dict_small = json.load(f)
         # with open('./res/wordle_dict.json', 'r') as f:
         #     self.wordle_dict = json.load(f)
 
@@ -40,7 +43,7 @@ class Wordle():
     def new_game(self, x: int, y: int):
         self.board_x = x
         self.board_y = y
-        self.target_word = random.choice(self.wordle_dict["words_" + str(x)])
+        self.target_word = random.choice(self.wordle_dict_small[f"words_{x}"])
         self.guessed_words = []
         self.state = GameState.PLAYING
         self.c_matrix = [[WordleColors.gray for i in range(x)] for j in range(y)]
