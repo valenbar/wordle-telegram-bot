@@ -1,7 +1,10 @@
 .env
 out.png
-__pycache__/ImageExport.cpython-39.pyc
-__pycache__/WordlePlugin.cpython-39.pyc
+*.pyc
+
 wordle_bot_data
 notebook.ipynb
 wordle-terminal-old.py
+.env-real
+*.png
+users.txt

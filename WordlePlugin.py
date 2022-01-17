@@ -22,7 +22,7 @@ class Wordle():
     wordle_dict = { "words_3": [], "words_4": [], "words_5": [], "words_6": [], "words_7": [] }
     board_x: int
     board_y: int
-    target_word: int
+    target_word: str
     guessed_words: list()
     c_matrix = [[WordleColors]]
     state = GameState.INIT
@@ -45,8 +45,9 @@ class Wordle():
         self.state = GameState.PLAYING
         self.c_matrix = [[WordleColors.gray for i in range(x)] for j in range(y)]
         self.export = ImageExport(self.board_x, self.board_y)
+        self.current_img = self.export.get_image(self.c_matrix, self.guessed_words)
 
-        return self.export.get_image(self.c_matrix, self.guessed_words)
+        return self.current_img
 
 
     def try_word(self, word: str):
@@ -60,8 +61,8 @@ class Wordle():
                 self.colorize_board()
             if result == Outcome.PROGRESS and len(self.guessed_words) == self.board_y:
                 self.state = GameState.LOST
-            print("state:", self.state)
-            return self.export.get_image(self.c_matrix, self.guessed_words)
+            self.current_img = self.export.get_image(self.c_matrix, self.guessed_words)
+            return self.current_img
         else:
             self.state == GameState.PLAYING
         return None
