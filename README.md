@@ -10,4 +10,3 @@ Example output:
 - [x] maybe a simpler word pool
 - [ ] Feature to change board size
 - [ ] Add resources.txt
-- [ ] Settings to change board dimensions
