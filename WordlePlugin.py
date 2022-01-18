@@ -35,9 +35,6 @@ class Wordle():
             self.wordle_dict = json.load(f)
         with open(f"./res/wordle_dict_small_{language}.json", "r") as f:
             self.wordle_dict_small = json.load(f)
-        # with open('./res/wordle_dict.json', 'r') as f:
-        #     self.wordle_dict = json.load(f)
-
 
 
     def new_game(self, x: int, y: int):
@@ -49,7 +46,6 @@ class Wordle():
         self.c_matrix = [[WordleColors.gray for i in range(x)] for j in range(y)]
         self.export = ImageExport(self.board_x, self.board_y)
         self.current_img = self.export.get_image(self.c_matrix, self.guessed_words)
-
         return self.current_img
 
 

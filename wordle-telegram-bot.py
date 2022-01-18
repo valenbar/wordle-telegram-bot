@@ -19,8 +19,7 @@ logging.basicConfig(
 
 logger = logging.getLogger(__name__)
 
-# Define a few command handlers. These usually take the two arguments update and
-# context.
+
 def start(update: Update, context: CallbackContext) -> (None):
     """Send a message when the command /start is issued."""
     config.log_new_user(update, context)
@@ -30,21 +29,11 @@ def start(update: Update, context: CallbackContext) -> (None):
     context.user_data["user_id"] = update.message.from_user.id
     help_command(update, context)
 
-# def change_language(update: Update, context: CallbackContext) -> (None):
-#     """show buttons to choose a language"""
-#     query = update.callback_query
-#     if query == None:
-#         msg_out = f"Choose a language, current language is: " + context.user_data.get("language", "german")
-#         menu_msg = context.user_data.get('menu_msg')
-#         menu_msg.delete()
-#         menu_msg = update.message.reply_text(msg_out, reply_markup=language_menu_markup)
-#         update.message.reply_text(text=msg_out, reply_markup=language_menu_markup)
-#     elif query.data.split(":")[1] == context.user_data.get("language"):
-#         query.answer()
-#     else:
-#         query.answer()
-#         context.user_data["language"] = query.data.split(":")[1]
-#         logging.info("%s changed language to %s", context.user_data.get('name'), query.data.split(':')[1])
+
+def help_command(update: Update, context: CallbackContext) -> (None):
+    """Send a message when the command /help is issued."""
+    context.user_data['menu_msg'] = update.message.reply_text("What do you want to do now?", reply_markup=main_menu_markup)
+
 
 def set_language(update: Update, context: CallbackContext) -> (None):
     """Send a message when the command /set_language is issued."""
@@ -58,9 +47,6 @@ def set_language(update: Update, context: CallbackContext) -> (None):
         logging.info("%s changed language to %s", context.user_data.get('name'), lan)
     config.show_main_menu(update, context)
 
-
-        # msg_out = f"Choose a language, current language is: " + context.user_data.get("language", "german")
-        # query.edit_message_text(text=msg_out + "\nstart a new game with /new", reply_markup=language_menu_markup)
 
 def start_game(update: Update, context: CallbackContext) -> (None):
     """Starts a new game"""
@@ -87,16 +73,11 @@ def start_game(update: Update, context: CallbackContext) -> (None):
     context.user_data["board_desc_msg"] = board_desc_msg
     logger.info(f"{context.user_data.get('name')} started a new game word: " + wordle.target_word)
 
+
 def check_word(update: Update, context: CallbackContext) -> (None):
     logger.info(f"{update.message.from_user.first_name} guessed {update.message.text}")
     wordle = context.user_data["wordle"]
 
-    # if wordle is None:
-    #     update.message.repyl_text("You need to start a game first! you can use /new")
-    #     return
-    # if wordle.state == GameState.LOST:
-    #     update.message.reply_text("You lost the game! Start a new one with /new")
-    #     return
     if wordle.state == GameState.WON or wordle.state == GameState.LOST or wordle.state == GameState.INIT or wordle is None:
         config.show_main_menu(update, context)
         return
@@ -131,38 +112,28 @@ def check_word(update: Update, context: CallbackContext) -> (None):
             context.user_data.get("board_desc_msg").edit_text("Try another word")
 
 
-    # if wordle.state == GameState.WON:
-    #     context.user_data.get("board_desc_msg").edit_text(f"You won, the word was: `{wordle.target_word}`")
-    # if wordle.state == GameState.INIT:
-    #     update.message.reply_text("You need to start a game first! you can use /new")
-
-def help_command(update: Update, context: CallbackContext) -> (None):
-    """Send a message when the command /help is issued."""
-    context.user_data['menu_msg'] = update.message.reply_text("What do you want to do now?", reply_markup=main_menu_markup)
-
 def give_up(update: Update, context: CallbackContext) -> (None):
     """Send a message when the command /give_up is issued."""
     query = update.callback_query
     query.answer()
     wordle = context.user_data["wordle"]
     img_msg = context.user_data.get("board_img_msg")
-    # context.bot.edit_message_media(chat_id=query.message.chat_id, message_id=img_msg, reply_markup=None)
     img_msg.delete()
     with open(config.image_location(update, context), "rb") as img:
         query.message.reply_photo(img)
     context.user_data.get("board_desc_msg").delete()
     context.user_data['board_desc_msg'] = query.message.reply_markdown_v2(fr"You gave up, the word was: *{wordle.target_word}*")
     context.user_data["menu_msg"] = query.message.reply_text("What do you want to do now?", reply_markup=main_menu_markup)
-
-    # query.message.reply_text(f"You gave up! The word was `{wordle.target_word}`\nStart a new game with /new")
     wordle.state = GameState.INIT
     logger.info(f"{context.user_data.get('name')} gave up")
+
 
 def language_select(update: Update, context: CallbackContext) -> (None):
     """Send a message when the command /language is issued."""
     query = update.callback_query
     query.answer()
     config.show_language_menu(update, context)
+
 
 def main() -> (None):
     """Start the bot."""
@@ -177,7 +148,6 @@ def main() -> (None):
     dispatcher.add_handler(CommandHandler("start", start))
     dispatcher.add_handler(CommandHandler("help", help_command))
     dispatcher.add_handler(CommandHandler("new", start_game))
-    # dispatcher.add_handler(CommandHandler("language", change_language))
     dispatcher.add_handler(CallbackQueryHandler(set_language, pattern="set_lan:.*"))
     dispatcher.add_handler(CallbackQueryHandler(give_up, pattern="give_up"))
     dispatcher.add_handler(CallbackQueryHandler(start_game, pattern="new_game"))
