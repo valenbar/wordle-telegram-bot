@@ -50,6 +50,7 @@ def start(update: Update, context: CallbackContext) -> (None):
 
 def help_command(update: Update, context: CallbackContext) -> (None):
     """Send a message when the command /help is issued."""
+    update.message.reply_text(text=config.help_text)
     context.user_data['menu_msg'] = update.message.reply_text("What do you want to do now?", reply_markup=main_menu_markup)
 
 
