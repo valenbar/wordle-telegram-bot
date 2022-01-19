@@ -13,15 +13,32 @@ import Config as config
 # from ImageExport import ImageExport
 
 # Enable logging
-logging.basicConfig(
-    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s', level=logging.INFO
-)
+# logging.basicConfig(
+#     format='%(asctime)s - %(name)s - %(levelname)s - %(message)s', level=logging.INFO
+# )
+# logger = logging.getLogger(__name__)
+
+logging.basicConfig(level=logging.DEBUG,
+                    format='%(asctime)s %(name)-12s %(levelname)-8s %(message)s',
+                    datefmt='%m-%d %H:%M',
+                    filename='myapp.log',
+                    filemode='a')
+# define a Handler which writes INFO messages or higher to the sys.stderr
+console = logging.StreamHandler()
+console.setLevel(logging.INFO)
+# set a format which is simpler for console use
+formatter = logging.Formatter('%(name)-12s: %(levelname)-8s %(message)s')
+# tell the handler to use this format
+console.setFormatter(formatter)
+# add the handler to the root logger
+logging.getLogger('').addHandler(console)
 
 logger = logging.getLogger(__name__)
 
 
 def start(update: Update, context: CallbackContext) -> (None):
     """Send a message when the command /start is issued."""
+    logger.info(f"new user connected: {update.message.from_user.first_name} {update.message.from_user.id}")
     config.log_new_user(update, context)
     config.send_start_message(update, context)
 
@@ -166,4 +183,5 @@ def main() -> (None):
 
 
 if __name__ == '__main__':
+    logger.info("Starting bot")
     main()
