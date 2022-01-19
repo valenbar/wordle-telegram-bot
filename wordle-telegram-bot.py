@@ -44,6 +44,7 @@ def start(update: Update, context: CallbackContext) -> (None):
 
     context.user_data["name"] = update.message.from_user.first_name
     context.user_data["user_id"] = update.message.from_user.id
+    context.user_data["board_size"] = "5x6"
     help_command(update, context)
 
 
@@ -77,7 +78,8 @@ def start_game(update: Update, context: CallbackContext) -> (None):
         menu_msg.delete()
     wordle = Wordle(context.user_data.get("language", "german"))
     context.user_data["wordle"] = wordle
-    img = wordle.new_game(x=5, y=6)
+    board_size = context.user_data.get("board_size", "english").split("x")
+    img = wordle.new_game(int(board_size[0]), int(board_size[1]))
     img.save(config.image_location(update, context))
 
     with open(config.image_location(update, context), "rb") as img:
