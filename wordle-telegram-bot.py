@@ -44,6 +44,7 @@ def start(update: Update, context: CallbackContext) -> (None):
 
     context.user_data["name"] = update.message.from_user.first_name
     context.user_data["user_id"] = update.message.from_user.id
+    context.user_data["language"] = "english"
     context.user_data["board_size"] = "5x6"
     help_command(update, context)
 
@@ -51,7 +52,9 @@ def start(update: Update, context: CallbackContext) -> (None):
 def help_command(update: Update, context: CallbackContext) -> (None):
     """Send a message when the command /help is issued."""
     update.message.reply_text(text=config.help_text)
+    update.message.reply_text(text=f"Current language: {context.user_data.get('language')}")
     context.user_data['menu_msg'] = update.message.reply_text("What do you want to do now?", reply_markup=main_menu_markup)
+
 
 
 def set_language(update: Update, context: CallbackContext) -> (None):
@@ -77,7 +80,7 @@ def start_game(update: Update, context: CallbackContext) -> (None):
     menu_msg = context.user_data.get("menu_msg")
     if menu_msg != None:
         menu_msg.delete()
-    wordle = Wordle(context.user_data.get("language", "german"))
+    wordle = Wordle(context.user_data.get("language", "english"))
     context.user_data["wordle"] = wordle
     board_size = context.user_data.get("board_size", "english").split("x")
     img = wordle.new_game(int(board_size[0]), int(board_size[1]))
