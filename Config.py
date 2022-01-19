@@ -1,4 +1,3 @@
-
 import logging
 
 from telegram import Update
@@ -6,13 +5,26 @@ from telegram.ext import CallbackContext
 
 from markups import *
 
-logging.basicConfig(
-    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s', level=logging.INFO
-)
-logger = logging.getLogger(__name__)
+# logging.basicConfig(
+#     filename='logfile.log', filemode='a', encoding='utf-8', format='%(asctime)s - %(name)s - %(levelname)s - %(message)s', level=logging.INFO
+# )
+# clogger = logging.getLogger(__name__)
+
+good_word_text: str = "Good guess, keep trying!"
+short_word_text: str = "The word is too short!"
+long_word_text: str = "The word is too long!"
+bad_word_text: str = "That word is not in the dictionary!"
+
+help_text = "Game rules:\n" \
+            "1. You need to guess a 5 letter word.\n" \
+            "2. A yellow letter means that the letter is in the word, but in the wrong position.\n" \
+            "3. A green letter means that the letter is in the word, and in the right position.\n" \
+            "4. You have 6 guesses.\n\n" \
+            "Commands:\n" \
+            "/start - Resets the bot\n" \
+            "/help - Shows this message"
 
 def log_new_user(update: Update, context: CallbackContext):
-    logger.info(f"new user connected: {update.message.from_user.first_name} {update.message.from_user.id}")
     with open("users.txt", "a") as f:
         f.write(f"{update.message.from_user.first_name} {update.message.from_user.id}\n")
 
