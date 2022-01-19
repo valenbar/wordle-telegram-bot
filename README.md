@@ -3,6 +3,7 @@ A telegram bot for playing wordles
 Try it out: [@TheWordleBot](https://www.t.me/TheWordleBot)
 
 Example output:
+
 ![This is an image](https://github.com/valenbar/wordle-telegram-bot/blob/main/res/sample-output.png?raw=true)
 
 ## TODO
