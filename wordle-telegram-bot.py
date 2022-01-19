@@ -10,7 +10,6 @@ from telegram.ext import Updater, CommandHandler, MessageHandler, Filters, Callb
 from WordlePlugin import Wordle, GameState
 from markups import *
 import Config as config
-# from ImageExport import ImageExport
 
 # Enable logging
 # logging.basicConfig(
@@ -87,12 +86,12 @@ def start_game(update: Update, context: CallbackContext) -> (None):
     img.save(config.image_location(update, context))
 
     with open(config.image_location(update, context), "rb") as img:
-        board_img_msg = update.message.reply_photo(img, reply_markup=give_up_markup)
+        img_msg = update.message.reply_photo(img, reply_markup=give_up_markup)
 
     # todo delete picture and text message from previous game
     board_desc_msg = update.message.reply_text("Good luck!")
 
-    context.user_data["board_img_msg"] = board_img_msg
+    context.user_data["img_msg"] = img_msg
     context.user_data["board_desc_msg"] = board_desc_msg
     logger.info(f"{context.user_data.get('name')} started a new game word: " + wordle.target_word)
 
@@ -110,29 +109,42 @@ def check_word(update: Update, context: CallbackContext) -> (None):
         img.save(config.image_location(update, context))
         img = open(config.image_location(update, context), "rb")
 
-        context.user_data.get("board_img_msg").delete()
+        context.user_data.get("img_msg").delete()
         context.user_data.get("board_desc_msg").delete()
 
         if wordle.state == GameState.WON:
             logger.info(f"{update.message.from_user.first_name} won the game")
-            context.user_data["board_img_msg"] = update.message.reply_photo(img)
+            img_msg = update.message.reply_photo(photo=img)
             update.message.reply_markdown_v2(f"You won, the word was: *{wordle.target_word}*")
             context.user_data["menu_msg"] = update.message.reply_text("What do you want to do now?", reply_markup=main_menu_markup)
         elif wordle.state == GameState.LOST:
             logger.info(f"{update.message.from_user.first_name} lost the game")
-            context.user_data["board_img_msg"] = update.message.reply_photo(img)
+            img_msg = update.message.reply_photo(photo=img)
             update.message.reply_markdown_v2(f"You lost, the word was: *{wordle.target_word}*")
             context.user_data["menu_msg"] = update.message.reply_text("What do you want to do now?", reply_markup=main_menu_markup)
         else:
-            context.user_data["board_img_msg"] = update.message.reply_photo(img, reply_markup=give_up_markup)
-
+            img_msg = update.message.reply_photo(photo=img, reply_markup=give_up_markup)
         if wordle.state == GameState.PLAYING:
-            context.user_data["board_desc_msg"] = update.message.reply_text("That looks good!")
+            try: context.user_data["board_desc_msg"] = update.message.reply_text(text=config.good_word_text)
+            except: pass
+        context.user_data["img_msg"] = img_msg
 
         img.close()
     else:
         if wordle.state == GameState.PLAYING:
-            context.user_data.get("board_desc_msg").edit_text("Try another word")
+            desc_msg = context.user_data["board_desc_msg"]
+            if desc_msg is None:
+                print("message not found")
+            elif len(update.message.text) < len(wordle.target_word):
+                try: desc_msg.edit_text(text=config.short_word_text)
+                except: pass
+            elif len(update.message.text) > len(wordle.target_word):
+                try: desc_msg.edit_text(text=config.long_word_text)
+                except: pass
+            elif len(update.message.text) == len(wordle.target_word):
+                try: desc_msg.edit_text(text=config.bad_word_text)
+                except: pass
+            update.message.delete()
 
 
 def give_up(update: Update, context: CallbackContext) -> (None):
@@ -140,7 +152,7 @@ def give_up(update: Update, context: CallbackContext) -> (None):
     query = update.callback_query
     query.answer()
     wordle = context.user_data["wordle"]
-    img_msg = context.user_data.get("board_img_msg")
+    img_msg = context.user_data.get("img_msg")
     img_msg.delete()
     with open(config.image_location(update, context), "rb") as img:
         query.message.reply_photo(img)
