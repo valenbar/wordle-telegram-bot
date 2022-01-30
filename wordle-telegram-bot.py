@@ -38,6 +38,7 @@ logger = logging.getLogger(__name__)
 def start(update: Update, context: CallbackContext) -> (None):
     """Send a message when the command /start is issued."""
     logger.info(f"new user connected: {update.message.from_user.first_name} {update.message.from_user.id}")
+    context.bot.send_message(os.environ.get("CHANNEL_ID"), f"new user connected: {update.message.from_user.first_name} {update.message.from_user.id}")
     config.log_new_user(update, context)
     config.send_start_message(update, context)
 
@@ -66,7 +67,8 @@ def set_language(update: Update, context: CallbackContext) -> (None):
     else:
         query.answer()
         context.user_data["language"] = lan
-        logging.info("%s changed language to %s", context.user_data.get('name'), lan)
+        logging.info(f"{query.from_user.first_name} changed language to {lan}")
+        context.bot.send_message(os.environ.get("CHANNEL_ID"), f"{query.from_user.first_name} changed language to {lan}")
     config.show_main_menu(update, context)
 
 
@@ -98,12 +100,14 @@ def start_game(update: Update, context: CallbackContext) -> (None):
 
     context.user_data["img_msg"] = img_msg
     context.user_data["board_desc_msg"] = board_desc_msg
-    logger.info(f"{context.user_data.get('name')} started a new game word: " + wordle.target_word)
+    logger.info(f"{update.from_user.first_name} started a new game, word: {wordle.target_word}")
+    context.bot.send_message(os.environ.get("CHANNEL_ID"), f"{update.from_user.first_name} started a new game, word: {wordle.target_word}")
 
 
 def check_word(update: Update, context: CallbackContext) -> (None):
     context.user_data['name'] = update.message.from_user.first_name
     logger.info(f"{update.message.from_user.first_name} guessed {update.message.text}")
+    context.bot.send_message(os.environ.get("CHANNEL_ID"), f"{update.message.from_user.first_name} guessed {update.message.text}")
     wordle = context.user_data.get("wordle", None)
     if wordle == None:
         start(update, context)
@@ -123,11 +127,13 @@ def check_word(update: Update, context: CallbackContext) -> (None):
 
         if wordle.state == GameState.WON:
             logger.info(f"{update.message.from_user.first_name} won the game")
+            context.bot.send_message(os.environ.get("CHANNEL_ID"), f"{update.message.from_user.first_name} won the game")
             img_msg = update.message.reply_photo(photo=img)
             update.message.reply_markdown_v2(f"You won, the word was: *{wordle.target_word}*")
             context.user_data["menu_msg"] = update.message.reply_text("What do you want to do now?", reply_markup=main_menu_markup)
         elif wordle.state == GameState.LOST:
             logger.info(f"{update.message.from_user.first_name} lost the game")
+            context.bot.send_message(os.environ.get("CHANNEL_ID"), f"{update.message.from_user.first_name} lost the game")
             img_msg = update.message.reply_photo(photo=img)
             update.message.reply_markdown_v2(f"You lost, the word was: *{wordle.target_word}*")
             context.user_data["menu_msg"] = update.message.reply_text("What do you want to do now?", reply_markup=main_menu_markup)
@@ -172,7 +178,8 @@ def give_up(update: Update, context: CallbackContext) -> (None):
     context.user_data['board_desc_msg'] = query.message.reply_markdown_v2(fr"You gave up, the word was: *{wordle.target_word}*")
     context.user_data["menu_msg"] = query.message.reply_text("What do you want to do now?", reply_markup=main_menu_markup)
     wordle.state = GameState.INIT
-    logger.info(f"{context.user_data.get('name')} gave up")
+    logger.info(f"{query.from_user.first_name} gave up")
+    context.bot.send_message(os.environ.get("CHANNEL_ID"), f"{query.from_user.first_name} gave up")
 
 
 def language_select(update: Update, context: CallbackContext) -> (None):
@@ -203,6 +210,7 @@ def main() -> (None):
     # on non command i.e message - echo the message on Telegram
     dispatcher.add_handler(MessageHandler(Filters.text & ~Filters.command, check_word))
 
+    updater.bot.send_message(os.environ.get("CHANNEL_ID"), "Wordle Bot restarting...")
     # Start the Bot
     updater.start_polling()
 
