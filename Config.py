@@ -50,14 +50,14 @@ def log_new_user(update: Update, context: CallbackContext):
                     "id": update.message.from_user.id
                 }
     try:
-        with open("unique_users.json", "r") as f:
+        with open("unique_users.json", "r", encoding="utf-8") as f:
             users = json.load(f)
     except FileNotFoundError:
         users = []
     if new_user not in users:
         users.append(new_user)
-        with open("unique_users.json", "w") as f:
-            json.dump(users, f, indent=4)
+        with open("unique_users.json", "w", encoding="utf-8") as f:
+            json.dump(users, f, indent=4, ensure_ascii=False)
 
 def send_start_message(update: Update, context: CallbackContext):
     return update.message.reply_text("Hi " + update.message.from_user.first_name + "!")
