@@ -13,4 +13,5 @@ Example output:
 - [ ] Feature to change board size
 - [ ] Add resources.txt
 - [ ] delete user message when when word is not added to board
+- [ ] remove yellow letter if that letter is already green and there is no other
 
