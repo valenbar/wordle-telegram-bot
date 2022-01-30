@@ -45,6 +45,7 @@ def start(update: Update, context: CallbackContext) -> (None):
     context.user_data["user_id"] = update.message.from_user.id
     context.user_data["language"] = "english"
     context.user_data["board_size"] = "5x6"
+
     help_command(update, context)
 
 
@@ -103,7 +104,10 @@ def start_game(update: Update, context: CallbackContext) -> (None):
 def check_word(update: Update, context: CallbackContext) -> (None):
     context.user_data['name'] = update.message.from_user.first_name
     logger.info(f"{update.message.from_user.first_name} guessed {update.message.text}")
-    wordle = context.user_data["wordle"]
+    wordle = context.user_data.get("wordle", None)
+    if wordle == None:
+        start(update, context)
+        return
 
     if wordle.state == GameState.WON or wordle.state == GameState.LOST or wordle.state == GameState.INIT or wordle is None:
         config.show_main_menu(update, context)
@@ -156,7 +160,10 @@ def give_up(update: Update, context: CallbackContext) -> (None):
     """Send a message when the command /give_up is issued."""
     query = update.callback_query
     query.answer()
-    wordle = context.user_data["wordle"]
+    wordle = context.user_data.get("wordle", None)
+    if wordle == None:
+        start_game(update, context)
+        return
     img_msg = context.user_data.get("img_msg")
     img_msg.delete()
     with open(config.image_location(update, context), "rb") as img:
