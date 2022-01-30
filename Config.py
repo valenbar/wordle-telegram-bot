@@ -1,4 +1,5 @@
 import logging
+import json
 
 from telegram import Update
 from telegram.ext import CallbackContext
@@ -44,6 +45,16 @@ help_text = "Game rules:\n" \
 def log_new_user(update: Update, context: CallbackContext):
     with open("users.txt", "a") as f:
         f.write(f"{update.message.from_user.first_name} {update.message.from_user.id}\n")
+    new_user = {
+                    "name": update.message.from_user.first_name,
+                    "id": update.message.from_user.id
+                }
+    with open("unique_users.json", "r") as f:
+        users = json.load(f)
+    if new_user not in users:
+        users.append(new_user)
+        with open("unique_users.json", "w") as f:
+            json.dump(users, f, indent=4)
 
 def send_start_message(update: Update, context: CallbackContext):
     return update.message.reply_text("Hi " + update.message.from_user.first_name + "!")
