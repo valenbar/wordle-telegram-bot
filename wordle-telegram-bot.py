@@ -101,6 +101,7 @@ def start_game(update: Update, context: CallbackContext) -> (None):
 
 
 def check_word(update: Update, context: CallbackContext) -> (None):
+    context.user_data['name'] = update.message.from_user.first_name
     logger.info(f"{update.message.from_user.first_name} guessed {update.message.text}")
     wordle = context.user_data["wordle"]
 
