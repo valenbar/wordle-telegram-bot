@@ -9,3 +9,4 @@ wordle-terminal-old.py
 users.txt
 wordle-telegram-bot.py
 *.log
+unique_users.json
