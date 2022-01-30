@@ -49,8 +49,11 @@ def log_new_user(update: Update, context: CallbackContext):
                     "name": update.message.from_user.first_name,
                     "id": update.message.from_user.id
                 }
-    with open("unique_users.json", "r") as f:
-        users = json.load(f)
+    try:
+        with open("unique_users.json", "r") as f:
+            users = json.load(f)
+    except FileNotFoundError:
+        users = []
     if new_user not in users:
         users.append(new_user)
         with open("unique_users.json", "w") as f:
