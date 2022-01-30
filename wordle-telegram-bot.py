@@ -81,6 +81,7 @@ def start_game(update: Update, context: CallbackContext) -> (None):
         try:
             menu_msg.delete()
         except:
+            logger.info("could not delete menu message, too much time passed")
             pass
     wordle = Wordle(context.user_data.get("language", "english"))
     context.user_data["wordle"] = wordle

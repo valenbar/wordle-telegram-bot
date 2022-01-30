@@ -10,6 +10,23 @@ from markups import *
 # )
 # clogger = logging.getLogger(__name__)
 
+logging.basicConfig(level=logging.INFO,
+                    format='%(asctime)s %(name)-12s %(levelname)-8s %(message)s',
+                    datefmt='%m-%d %H:%M',
+                    filename='myapp.log',
+                    filemode='a')
+# define a Handler which writes INFO messages or higher to the sys.stderr
+console = logging.StreamHandler()
+console.setLevel(logging.INFO)
+# set a format which is simpler for console use
+formatter = logging.Formatter('%(name)-12s: %(levelname)-8s %(message)s')
+# tell the handler to use this format
+console.setFormatter(formatter)
+# add the handler to the root logger
+# logging.getLogger('').addHandler(console)
+
+logger = logging.getLogger(__name__)
+
 good_word_text: str = "Good guess, keep trying!"
 short_word_text: str = "The word is too short!"
 long_word_text: str = "The word is too long!"
@@ -60,6 +77,7 @@ def show_language_menu(update: Update, context: CallbackContext):
         try:
             menu_msg = menu_msg.edit_text("Choose your language:", reply_markup=language_menu_markup)
         except:
+            logger.info("could not edit menu message, too much time passed")
             menu_msg = update.message.reply_text("Choose your language:", reply_markup=language_menu_markup)
             pass
     context.user_data["menu_msg"] = menu_msg
