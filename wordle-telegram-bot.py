@@ -85,7 +85,7 @@ def start_game(update: Update, context: CallbackContext) -> (None):
             pass
     wordle = Wordle(context.user_data.get("language", "english"))
     context.user_data["wordle"] = wordle
-    board_size = context.user_data.get("board_size", "english").split("x")
+    board_size = context.user_data.get("board_size", "5x6").split("x")
     img = wordle.new_game(int(board_size[0]), int(board_size[1]))
     img.save(config.image_location(update, context))
 
