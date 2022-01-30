@@ -57,7 +57,11 @@ def show_language_menu(update: Update, context: CallbackContext):
     if menu_msg is None:
         menu_msg = update.message.reply_text("Choose your language:", reply_markup=language_menu_markup)
     else:
-        menu_msg = menu_msg.edit_text("Choose your language:", reply_markup=language_menu_markup)
+        try:
+            menu_msg = menu_msg.edit_text("Choose your language:", reply_markup=language_menu_markup)
+        except:
+            menu_msg = update.message.reply_text("Choose your language:", reply_markup=language_menu_markup)
+            pass
     context.user_data["menu_msg"] = menu_msg
 
 

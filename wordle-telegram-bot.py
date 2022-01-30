@@ -78,7 +78,10 @@ def start_game(update: Update, context: CallbackContext) -> (None):
 
     menu_msg = context.user_data.get("menu_msg")
     if menu_msg != None:
-        menu_msg.delete()
+        try:
+            menu_msg.delete()
+        except:
+            pass
     wordle = Wordle(context.user_data.get("language", "english"))
     context.user_data["wordle"] = wordle
     board_size = context.user_data.get("board_size", "english").split("x")
