@@ -9,11 +9,13 @@ Example output:
 ## TODO
 
 - [x] Feature to change language
-- [x] maybe a simpler word pool
-- [ ] Feature to change board size
+- [x] Simpler word pool
+- [x] Delete user message when when word is not added to board
+- [x] Update unique users count to log channel
+- [x] Remove yellow letter if that letter is already green and there is no other
+- [ ] Option to change board size
 - [ ] Add resources.txt
-- [x] delete user message when when word is not added to board
-- [ ] remove yellow letter if that letter is already green and there is no other
 - [ ] Notify if guess is in the wrong language
-- [ ] Update unique users count to log channel
+- [ ] Save all word guesses to a dictionary to find most common guesses
+- [ ] Add more markdown to log channel messages
 
