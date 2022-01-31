@@ -10,3 +10,5 @@ users.txt
 wordle-telegram-bot.py
 *.log
 unique_users.json
+used_words_english.json
+used_words_german.json

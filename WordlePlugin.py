@@ -28,9 +28,11 @@ class Wordle():
     c_matrix = [[WordleColors]]
     state = GameState.INIT
     export: ImageExport
+    language: str
 
 
     def __init__(self, language: str):
+        self.language = language
         with open(f"./res/wordle_dict_{language}.json", "r") as f:
             self.wordle_dict = json.load(f)
         with open(f"./res/wordle_dict_10k_{language}.json", "r") as f:
@@ -51,6 +53,18 @@ class Wordle():
 
     def try_word(self, word: str):
         word = word.upper()
+        try:
+            with open(f"used_words_{self.language}.json", "r", encoding="utf-8") as f:
+                used_words = json.load(f)
+            if used_words.get(word, None) is None:
+                used_words[word] = 1
+            else:
+                used_words.update({word: used_words[word] + 1})
+            print(json.dumps(used_words, indent=4, ensure_ascii=False))
+            with open(f"used_words_{self.language}.json", "w", encoding="utf-8") as f:
+                json.dump(used_words, f, indent=4, ensure_ascii=False)
+        except:
+            pass
         if self.state == GameState.LOST or self.state == GameState.WON:
             return None
         result = self.check_rules(word)
