@@ -99,13 +99,13 @@ def check_word(update: Update, context: CallbackContext) -> (None):
             globals.logger.info(f"{update.message.from_user.first_name} won the game")
             context.bot.send_message(globals.LOG_CHANNEL, f"{update.message.from_user.first_name} won the game")
             img_msg = update.message.reply_photo(photo=img)
-            update.message.reply_markdown_v2(f"You won, the word was: *{wordle.target_word}*")
+            update.message.reply_text(f"You won, the word was: *{wordle.target_word}*", parse_mode='Markdown')
             context.user_data["menu_msg"] = update.message.reply_text("What do you want to do now?", reply_markup=main_menu_markup)
         elif wordle.state == GameState.LOST:
             globals.logger.info(f"{update.message.from_user.first_name} lost the game")
             context.bot.send_message(globals.LOG_CHANNEL, f"{update.message.from_user.first_name} lost the game")
             img_msg = update.message.reply_photo(photo=img)
-            update.message.reply_markdown_v2(f"You lost, the word was: *{wordle.target_word}*")
+            update.message.reply_text(f"You lost, the word was: *{wordle.target_word}*", parse_mode='Markdown')
             context.user_data["menu_msg"] = update.message.reply_text("What do you want to do now?", reply_markup=main_menu_markup)
         else:
             img_msg = update.message.reply_photo(photo=img, reply_markup=give_up_markup)
@@ -145,7 +145,7 @@ def give_up(update: Update, context: CallbackContext) -> (None):
     with open(config.image_location(update, context), "rb") as img:
         query.message.reply_photo(img)
     context.user_data.get("board_desc_msg").delete()
-    context.user_data['board_desc_msg'] = query.message.reply_markdown_v2(fr"You gave up, the word was: *{wordle.target_word}*")
+    context.user_data['board_desc_msg'] = query.message.reply_text(fr"You gave up, the word was: *{wordle.target_word}*", parse_mode='Markdown')
     context.user_data["menu_msg"] = query.message.reply_text("What do you want to do now?", reply_markup=main_menu_markup)
     wordle.state = GameState.INIT
     globals.logger.info(f"{query.from_user.first_name} gave up")
