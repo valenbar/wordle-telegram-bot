@@ -13,9 +13,9 @@ Example output:
 - [x] Delete user message when when word is not added to board
 - [x] Update unique users count to log channel
 - [x] Remove yellow letter if that letter is already green and there is no other
+- [x] Add more markdown to log channel messages
 - [ ] Option to change board size
 - [ ] Add resources.txt
 - [ ] Notify if guess is in the wrong language
 - [ ] Save all word guesses to a dictionary to find most common guesses
-- [ ] Add more markdown to log channel messages
 
