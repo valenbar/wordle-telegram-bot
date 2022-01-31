@@ -11,7 +11,6 @@ import globals
 def start(update: Update, context: CallbackContext) -> (None):
     """Send a message when the command /start is issued."""
     config.log_new_user(update, context)
-    config.send_start_message(update, context)
 
     context.user_data["name"] = update.message.from_user.first_name
     context.user_data["user_id"] = update.message.from_user.id

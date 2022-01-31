@@ -57,9 +57,6 @@ def log_new_user(update: Update, context: CallbackContext):
         with open("unique_users.json", "w", encoding="utf-8") as f:
             json.dump(users, f, indent=4, ensure_ascii=False)
 
-def send_start_message(update: Update, context: CallbackContext):
-    return update.message.reply_text("Hi " + update.message.from_user.first_name + "!")
-
 def image_location(update: Update, context: CallbackContext):
     return "./out" + str(context.user_data.get('user_id', '0000')) + ".png"
 
