@@ -87,10 +87,16 @@ class Wordle():
 
     def colorize_board(self):
         for i, word in enumerate(self.guessed_words):
+            green = {letter: 0 for letter in self.target_word}
             for j, char in enumerate(word):
                 if char == self.target_word[j]:
                     self.c_matrix[i][j] = WordleColors.green
+                    green[char] += 1
                 elif char in self.target_word:
-                    self.c_matrix[i][j] = WordleColors.yellow
+                    if green[char] < self.target_word.count(char):
+                        self.c_matrix[i][j] = WordleColors.yellow
+                    else:
+                        self.c_matrix[i][j] = WordleColors.gray
                 else:
                     self.c_matrix[i][j] = WordleColors.gray
+            # check for unnecessary yellow chars
