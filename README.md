@@ -12,7 +12,7 @@ Example output:
 - [x] maybe a simpler word pool
 - [ ] Feature to change board size
 - [ ] Add resources.txt
-- [ ] delete user message when when word is not added to board
+- [x] delete user message when when word is not added to board
 - [ ] remove yellow letter if that letter is already green and there is no other
 - [ ] Notify if guess is in the wrong language
 - [ ] Update unique users count to log channel
