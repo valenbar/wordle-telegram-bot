@@ -99,4 +99,3 @@ class Wordle():
                         self.c_matrix[i][j] = WordleColors.gray
                 else:
                     self.c_matrix[i][j] = WordleColors.gray
-            # check for unnecessary yellow chars
