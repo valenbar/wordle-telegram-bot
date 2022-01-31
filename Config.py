@@ -52,6 +52,8 @@ def log_new_user(update: Update, context: CallbackContext):
         users = []
     if new_user not in users:
         users.append(new_user)
+        globals.logger.info(f"new user connected: {new_user['name']} {new_user['id']}")
+        context.bot.send_message(globals.LOG_CHANNEL, f"new user: {update.message.from_user.mention_markdown_v2()} \nID: `{update.message.from_user.id}`", parse_mode='Markdown')
         with open("unique_users.json", "w", encoding="utf-8") as f:
             json.dump(users, f, indent=4, ensure_ascii=False)
 

@@ -10,8 +10,6 @@ import globals
 
 def start(update: Update, context: CallbackContext) -> (None):
     """Send a message when the command /start is issued."""
-    globals.logger.info(f"new user connected: {update.message.from_user.first_name} {update.message.from_user.id}")
-    context.bot.send_message(globals.LOG_CHANNEL, f"new user connected: {update.message.from_user.first_name} {update.message.from_user.id}")
     config.log_new_user(update, context)
     config.send_start_message(update, context)
 
