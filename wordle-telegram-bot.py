@@ -1,44 +1,17 @@
 #!/usr/bin/env python
 
-import logging
-from dotenv import load_dotenv
-import os
-
 from telegram import Update, ForceReply, ParseMode
 from telegram.ext import Updater, CommandHandler, MessageHandler, Filters, CallbackContext, PicklePersistence, CallbackQueryHandler
 
 from WordlePlugin import Wordle, GameState
 from markups import *
 import Config as config
-
-# Enable logging
-# logging.basicConfig(
-#     format='%(asctime)s - %(name)s - %(levelname)s - %(message)s', level=logging.INFO
-# )
-# logger = logging.getLogger(__name__)
-
-logging.basicConfig(level=logging.INFO,
-                    format='%(asctime)s %(name)-12s %(levelname)-8s %(message)s',
-                    datefmt='%m-%d %H:%M',
-                    filename='myapp.log',
-                    filemode='a')
-# define a Handler which writes INFO messages or higher to the sys.stderr
-console = logging.StreamHandler()
-console.setLevel(logging.INFO)
-# set a format which is simpler for console use
-formatter = logging.Formatter('%(name)-12s: %(levelname)-8s %(message)s')
-# tell the handler to use this format
-console.setFormatter(formatter)
-# add the handler to the root logger
-# logging.getLogger('').addHandler(console)
-
-logger = logging.getLogger(__name__)
-
+import globals
 
 def start(update: Update, context: CallbackContext) -> (None):
     """Send a message when the command /start is issued."""
-    logger.info(f"new user connected: {update.message.from_user.first_name} {update.message.from_user.id}")
-    context.bot.send_message(log_channel, f"new user connected: {update.message.from_user.first_name} {update.message.from_user.id}")
+    globals.logger.info(f"new user connected: {update.message.from_user.first_name} {update.message.from_user.id}")
+    context.bot.send_message(globals.LOG_CHANNEL, f"new user connected: {update.message.from_user.first_name} {update.message.from_user.id}")
     config.log_new_user(update, context)
     config.send_start_message(update, context)
 
@@ -67,8 +40,8 @@ def set_language(update: Update, context: CallbackContext) -> (None):
     else:
         query.answer()
         context.user_data["language"] = lan
-        logging.info(f"{query.from_user.first_name} changed language to {lan}")
-        context.bot.send_message(log_channel, f"{query.from_user.first_name} changed language to {lan}")
+        globals.logger.info(f"{query.from_user.first_name} changed language to {lan}")
+        context.bot.send_message(globals.LOG_CHANNEL, f"{query.from_user.first_name} changed language to {lan}")
     config.show_main_menu(update, context)
 
 
@@ -84,7 +57,7 @@ def start_game(update: Update, context: CallbackContext) -> (None):
         try:
             menu_msg.delete()
         except:
-            logger.info("could not delete menu message, too much time passed")
+            globals.logger.info("could not delete menu message, too much time passed")
             pass
     wordle = Wordle(context.user_data.get("language", "english"))
     context.user_data["wordle"] = wordle
@@ -99,14 +72,14 @@ def start_game(update: Update, context: CallbackContext) -> (None):
 
     context.user_data["img_msg"] = img_msg
     context.user_data["board_desc_msg"] = board_desc_msg
-    logger.info(f"{update.from_user.first_name} started a new game, word: {wordle.target_word}")
-    context.bot.send_message(log_channel, f"{update.from_user.first_name} started a new game, word: {wordle.target_word}")
+    globals.logger.info(f"{update.from_user.first_name} started a new game, word: {wordle.target_word}")
+    context.bot.send_message(globals.LOG_CHANNEL, f"{update.from_user.first_name} started a new game, word: {wordle.target_word}")
 
 
 def check_word(update: Update, context: CallbackContext) -> (None):
     context.user_data['name'] = update.message.from_user.first_name
-    logger.info(f"{update.message.from_user.first_name} guessed {update.message.text}")
-    context.bot.send_message(log_channel, f"{update.message.from_user.first_name} guessed {update.message.text}")
+    globals.logger.info(f"{update.message.from_user.first_name} guessed {update.message.text}")
+    context.bot.send_message(globals.LOG_CHANNEL, f"{update.message.from_user.first_name} guessed {update.message.text}")
     wordle = context.user_data.get("wordle", None)
     if wordle == None:
         start(update, context)
@@ -125,14 +98,14 @@ def check_word(update: Update, context: CallbackContext) -> (None):
         context.user_data.get("board_desc_msg").delete()
 
         if wordle.state == GameState.WON:
-            logger.info(f"{update.message.from_user.first_name} won the game")
-            context.bot.send_message(log_channel, f"{update.message.from_user.first_name} won the game")
+            globals.logger.info(f"{update.message.from_user.first_name} won the game")
+            context.bot.send_message(globals.LOG_CHANNEL, f"{update.message.from_user.first_name} won the game")
             img_msg = update.message.reply_photo(photo=img)
             update.message.reply_markdown_v2(f"You won, the word was: *{wordle.target_word}*")
             context.user_data["menu_msg"] = update.message.reply_text("What do you want to do now?", reply_markup=main_menu_markup)
         elif wordle.state == GameState.LOST:
-            logger.info(f"{update.message.from_user.first_name} lost the game")
-            context.bot.send_message(log_channel, f"{update.message.from_user.first_name} lost the game")
+            globals.logger.info(f"{update.message.from_user.first_name} lost the game")
+            context.bot.send_message(globals.LOG_CHANNEL, f"{update.message.from_user.first_name} lost the game")
             img_msg = update.message.reply_photo(photo=img)
             update.message.reply_markdown_v2(f"You lost, the word was: *{wordle.target_word}*")
             context.user_data["menu_msg"] = update.message.reply_text("What do you want to do now?", reply_markup=main_menu_markup)
@@ -177,8 +150,8 @@ def give_up(update: Update, context: CallbackContext) -> (None):
     context.user_data['board_desc_msg'] = query.message.reply_markdown_v2(fr"You gave up, the word was: *{wordle.target_word}*")
     context.user_data["menu_msg"] = query.message.reply_text("What do you want to do now?", reply_markup=main_menu_markup)
     wordle.state = GameState.INIT
-    logger.info(f"{query.from_user.first_name} gave up")
-    context.bot.send_message(log_channel, f"{query.from_user.first_name} gave up")
+    globals.logger.info(f"{query.from_user.first_name} gave up")
+    context.bot.send_message(globals.LOG_CHANNEL, f"{query.from_user.first_name} gave up")
 
 
 def language_select(update: Update, context: CallbackContext) -> (None):
@@ -191,7 +164,7 @@ def language_select(update: Update, context: CallbackContext) -> (None):
 def main() -> (None):
     """Start the bot."""
     # Create the Updater and pass it your bot's token.
-    updater = Updater(os.environ.get("API_TOKEN"), persistence=PicklePersistence(filename="wordle_bot_data"))
+    updater = Updater(globals.API_TOKEN, persistence=PicklePersistence(filename="wordle_bot_data"))
 
     # Get the dispatcher to register handlers
     dispatcher = updater.dispatcher
@@ -208,7 +181,7 @@ def main() -> (None):
     # on non command i.e message - echo the message on Telegram
     dispatcher.add_handler(MessageHandler(Filters.text & ~Filters.command, check_word))
 
-    updater.bot.send_message(log_channel, "Wordle Bot restarting...")
+    updater.bot.send_message(globals.LOG_CHANNEL, "Wordle Bot restarting...")
     # Start the Bot
     updater.start_polling()
 
@@ -219,7 +192,6 @@ def main() -> (None):
 
 
 if __name__ == '__main__':
-    logger.info("Starting bot")
-    load_dotenv()
-    log_channel = os.environ.get("CHANNEL_ID")
+    globals.initialize()
+    globals.logger.info("Starting bot")
     main()
