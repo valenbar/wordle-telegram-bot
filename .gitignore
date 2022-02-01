@@ -12,3 +12,4 @@ wordle-telegram-bot.py
 unique_users.json
 used_words_english.json
 used_words_german.json
+used_words_swedish.json
