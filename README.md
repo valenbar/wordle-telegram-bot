@@ -20,3 +20,4 @@ Example output:
 - [ ] Notify if guess is in the wrong language
 - [ ] Count game wins per user
 - [ ] Feedback option
+- [ ] Language change starts new game
