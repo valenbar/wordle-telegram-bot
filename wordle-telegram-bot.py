@@ -75,6 +75,15 @@ def start_game(update: Update, context: CallbackContext) -> (None):
 
 def check_word(update: Update, context: CallbackContext) -> (None):
     context.user_data['name'] = update.message.from_user.first_name
+
+    # remove message with forbidden chars
+    if any(c not in globals.alphabet for c in update.message.text):
+        desc_msg = context.user_data.get("board_desc_msg")
+        try: desc_msg.edit_text(text=config.bad_word_text)
+        except: pass
+        update.message.delete()
+        return
+
     globals.logger.info(f"{update.message.from_user.first_name} guessed {update.message.text}")
     context.bot.send_message(globals.LOG_CHANNEL, f"{update.message.from_user.mention_markdown_v2()} guessed: _{update.message.text}_", parse_mode='MarkdownV2')
     wordle = context.user_data.get("wordle", None)

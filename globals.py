@@ -4,9 +4,12 @@ import logging
 
 def initialize():
     load_dotenv()
-    global API_TOKEN, LOG_CHANNEL, logger
+
+    global API_TOKEN, LOG_CHANNEL
     API_TOKEN = os.getenv("API_TOKEN")
     LOG_CHANNEL = os.getenv("LOG_CHANNEL")
+
+    global logger
     # Enable logging
     logging.basicConfig(level=logging.INFO,
                         format='%(asctime)s %(name)-12s %(levelname)-8s %(message)s',
@@ -23,3 +26,6 @@ def initialize():
     # add the handler to the root logger
     # logging.getLogger('').addHandler(console)
     logger = logging.getLogger(__name__)
+
+    global alphabet
+    alphabet = "abcdefghijklmnopqrstuvwxyzäöüßABCDEFGHIJKLMNOPQRSTUVWXYZÄÖÜẞ"+"Åå"
