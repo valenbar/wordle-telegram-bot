@@ -19,4 +19,4 @@ Example output:
 - [ ] Add resources.txt
 - [ ] Notify if guess is in the wrong language
 - [ ] Count game wins per user
-
+- [ ] Feedback option
