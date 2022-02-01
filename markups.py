@@ -20,7 +20,8 @@ language_menu_markup = InlineKeyboardMarkup(
     [
         [
             InlineKeyboardButton("German", callback_data="set_lan:german"),
-            InlineKeyboardButton("English", callback_data="set_lan:english")
+            InlineKeyboardButton("English", callback_data="set_lan:english"),
+            InlineKeyboardButton("Swedish", callback_data="set_lan:swedish")
         ]
     ])
 

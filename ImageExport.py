@@ -12,6 +12,7 @@ class ImageExport():
 
     board_x: int
     board_y: int
+    alphabet = "abcdefghijklmnopqrstuvwxyzäöüABCDEFGHIJKLMNOPQRSTUVWXYZÄÖÜ"+"Åå"
 
     def __init__(self, x: int, y: int):
         self.board_x = x
@@ -20,7 +21,7 @@ class ImageExport():
     def get_image(self, color_matrix, guessed_words):
         fnt=ImageFont.truetype('./res/FiraCode-SemiBold.ttf', size=40)
         letter_size = {}
-        for c in "abcdefghijklmnopqrstuvwxyzäöüABCDEFGHIJKLMNOPQRSTUVWXYZÄÖÜ":
+        for c in self.alphabet:
             letter_size[c] = fnt.getsize(c)
 
         c = WordleColors()
