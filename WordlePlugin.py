@@ -60,7 +60,6 @@ class Wordle():
                 used_words[word] = 1
             else:
                 used_words.update({word: used_words[word] + 1})
-            print(json.dumps(used_words, indent=4, ensure_ascii=False))
             with open(f"used_words_{self.language}.json", "w", encoding="utf-8") as f:
                 json.dump(used_words, f, indent=4, ensure_ascii=False)
         except:
