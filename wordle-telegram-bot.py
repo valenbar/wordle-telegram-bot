@@ -47,6 +47,7 @@ def set_language(update: Update, context: CallbackContext) -> (None):
 def start_game(update: Update, context: CallbackContext) -> (None):
     """Starts a new game"""
     query = update.callback_query
+    update_backup = update
     if query != None:
         query.answer()
         update = query
@@ -71,8 +72,11 @@ def start_game(update: Update, context: CallbackContext) -> (None):
 
     context.user_data["img_msg"] = img_msg
     context.user_data["board_desc_msg"] = board_desc_msg
-    globals.logger.info(f"{update.message.from_user.first_name} started a new game, word: {wordle.target_word}")
-    context.bot.send_message(globals.LOG_CHANNEL, f"{update.message.from_user.mention_markdown_v2()} started a new game, word: *_{wordle.target_word}_*\n", parse_mode='MarkdownV2')
+
+    if query == None:
+        update = update_backup.message
+    globals.logger.info(f"{update.from_user.first_name} started a new game, word: {wordle.target_word}")
+    context.bot.send_message(globals.LOG_CHANNEL, f"{update.from_user.mention_markdown_v2()} started a new game, word: *_{wordle.target_word}_*\n", parse_mode='MarkdownV2')
 
 
 def check_word(update: Update, context: CallbackContext) -> (None):
