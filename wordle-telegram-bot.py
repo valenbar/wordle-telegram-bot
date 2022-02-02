@@ -1,4 +1,5 @@
 #!/usr/bin/env python
+from PIL import Image
 
 from telegram import Update, ForceReply, ParseMode
 from telegram.ext import Updater, CommandHandler, MessageHandler, Filters, CallbackContext, PicklePersistence, CallbackQueryHandler
@@ -7,6 +8,7 @@ from WordlePlugin import Wordle, GameState
 from markups import *
 import Config as config
 import globals
+from functions import monti_on, monti_off, flip_image
 
 def start(update: Update, context: CallbackContext) -> (None):
     """Send a message when the command /start is issued."""
@@ -69,8 +71,8 @@ def start_game(update: Update, context: CallbackContext) -> (None):
 
     context.user_data["img_msg"] = img_msg
     context.user_data["board_desc_msg"] = board_desc_msg
-    globals.logger.info(f"{update.from_user.first_name} started a new game, word: {wordle.target_word}")
-    context.bot.send_message(globals.LOG_CHANNEL, f"{update.from_user.mention_markdown_v2()} started a new game, word: *_{wordle.target_word}_*\n", parse_mode='MarkdownV2')
+    globals.logger.info(f"{update.message.from_user.first_name} started a new game, word: {wordle.target_word}")
+    context.bot.send_message(globals.LOG_CHANNEL, f"{update.message.from_user.mention_markdown_v2()} started a new game, word: *_{wordle.target_word}_*\n", parse_mode='MarkdownV2')
 
 
 def check_word(update: Update, context: CallbackContext) -> (None):
@@ -82,6 +84,12 @@ def check_word(update: Update, context: CallbackContext) -> (None):
         try: desc_msg.edit_text(text=config.bad_word_text)
         except: pass
         update.message.delete()
+        return
+
+    # easteregg
+    if update.message.text.upper() == "MONTI":
+        monti_on(update, context)
+        start_game(update, context)
         return
 
     globals.logger.info(f"{update.message.from_user.first_name} guessed {update.message.text}")
@@ -97,6 +105,10 @@ def check_word(update: Update, context: CallbackContext) -> (None):
 
     img = wordle.try_word(update.message.text)
     if img is not None:
+
+        # easteregg
+        img = flip_image(context, img)
+
         img.save(config.image_location(update, context))
         img = open(config.image_location(update, context), "rb")
 
@@ -142,6 +154,7 @@ def check_word(update: Update, context: CallbackContext) -> (None):
 
 def give_up(update: Update, context: CallbackContext) -> (None):
     """Send a message when the command /give_up is issued."""
+    if context.user_data.get('flip', False): monti_off(context)
     query = update.callback_query
     query.answer()
     wordle = context.user_data.get("wordle", None)
