@@ -11,11 +11,6 @@ settings_markup = InlineKeyboardMarkup(
         ]
     ])
 
-game_settings_markup = ReplyKeyboardMarkup(
-    [
-        #
-    ])
-
 language_menu_markup = InlineKeyboardMarkup(
     [
         [

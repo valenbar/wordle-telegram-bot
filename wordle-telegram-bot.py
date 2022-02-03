@@ -1,5 +1,4 @@
 #!/usr/bin/env python
-from PIL import Image
 
 from telegram import Update, ForceReply, ParseMode
 from telegram.ext import Updater, CommandHandler, MessageHandler, Filters, CallbackContext, PicklePersistence, CallbackQueryHandler
@@ -8,11 +7,11 @@ from WordlePlugin import Wordle, GameState
 from markups import *
 import Config as config
 import globals
-from functions import monti_on, monti_off, flip_image
+from functions import *
 
 def start(update: Update, context: CallbackContext) -> (None):
     """Send a message when the command /start is issued."""
-    config.log_new_user(update, context)
+    log_new_user(update, context)
 
     context.user_data["name"] = update.message.from_user.first_name
     context.user_data["user_id"] = update.message.from_user.id
@@ -41,7 +40,7 @@ def set_language(update: Update, context: CallbackContext) -> (None):
         context.user_data["language"] = lan
         globals.logger.info(f"{query.from_user.first_name} changed language to {lan}")
         context.bot.send_message(globals.LOG_CHANNEL, f"{query.from_user.mention_markdown_v2()} changed language to _{lan}_", parse_mode='MarkdownV2')
-    config.show_main_menu(update, context)
+    show_main_menu(update, context)
 
 
 def start_game(update: Update, context: CallbackContext) -> (None):
@@ -63,9 +62,9 @@ def start_game(update: Update, context: CallbackContext) -> (None):
     context.user_data["wordle"] = wordle
     board_size = context.user_data.get("board_size", "5x6").split("x")
     img = wordle.new_game(int(board_size[0]), int(board_size[1]))
-    img.save(config.image_location(update, context))
+    img.save(image_location(context))
 
-    with open(config.image_location(update, context), "rb") as img:
+    with open(image_location(context), "rb") as img:
         img_msg = update.message.reply_photo(img, reply_markup=give_up_markup)
 
     board_desc_msg = update.message.reply_text(f"language: _{context.user_data.get('language', 'not sure')}_, *Good luck\!*", parse_mode='MarkdownV2')
@@ -104,7 +103,7 @@ def check_word(update: Update, context: CallbackContext) -> (None):
         return
 
     if wordle.state == GameState.WON or wordle.state == GameState.LOST or wordle.state == GameState.INIT or wordle is None:
-        config.show_main_menu(update, context)
+        show_main_menu(update, context)
         return
 
     img = wordle.try_word(update.message.text)
@@ -113,8 +112,8 @@ def check_word(update: Update, context: CallbackContext) -> (None):
         # easteregg
         img = flip_image(context, img)
 
-        img.save(config.image_location(update, context))
-        img = open(config.image_location(update, context), "rb")
+        img.save(image_location(context))
+        img = open(image_location(context), "rb")
 
         context.user_data.get("img_msg").delete()
         context.user_data.get("board_desc_msg").delete()
@@ -167,7 +166,7 @@ def give_up(update: Update, context: CallbackContext) -> (None):
         return
     img_msg = context.user_data.get("img_msg")
     img_msg.delete()
-    with open(config.image_location(update, context), "rb") as img:
+    with open(image_location(context), "rb") as img:
         query.message.reply_photo(img)
     context.user_data.get("board_desc_msg").delete()
     context.user_data['board_desc_msg'] = query.message.reply_text(fr"You gave up, the word was: __*_{wordle.target_word}_*__", parse_mode='MarkdownV2')
@@ -181,7 +180,7 @@ def language_select(update: Update, context: CallbackContext) -> (None):
     """Send a message when the command /language is issued."""
     query = update.callback_query
     query.answer()
-    config.show_language_menu(update, context)
+    show_language_menu(update, context)
 
 
 def main() -> (None):
