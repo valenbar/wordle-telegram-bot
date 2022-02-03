@@ -5,6 +5,7 @@ Heavily inspired by: https://www.powerlanguage.co.uk/wordle/
 Try it out: [@TheWordleBot](https://www.t.me/TheWordleBot)
 
 This is how it looks like:
+
 ![This is an image](https://github.com/valenbar/wordle-telegram-bot/blob/main/res/sample-output.png?raw=true)
 
 ## Features
