@@ -28,7 +28,6 @@ def help_command(update: Update, context: CallbackContext) -> (None):
     context.user_data['menu_msg'] = update.message.reply_text("What do you want to do now?", reply_markup=main_menu_markup)
 
 
-
 def set_language(update: Update, context: CallbackContext) -> (None):
     """Send a message when the command /set_language is issued."""
     query = update.callback_query
@@ -65,12 +64,12 @@ def start_game(update: Update, context: CallbackContext) -> (None):
     img.save(image_location(context))
 
     with open(image_location(context), "rb") as img:
-        img_msg = update.message.reply_photo(img, reply_markup=give_up_markup)
-
-    board_desc_msg = update.message.reply_text(f"language: _{context.user_data.get('language', 'not sure')}_, *Good luck\!*", parse_mode='MarkdownV2')
-
+        img_msg = update.message.reply_photo(
+            photo=img,
+            caption=f"language: _{context.user_data.get('language', 'not sure')}_, *Good luck\!*",
+            parse_mode='MarkdownV2',
+            reply_markup=give_up_markup)
     context.user_data["img_msg"] = img_msg
-    context.user_data["board_desc_msg"] = board_desc_msg
 
     if query == None:
         update = update_backup.message
@@ -83,8 +82,8 @@ def check_word(update: Update, context: CallbackContext) -> (None):
 
     # remove message with forbidden chars
     if any(c not in globals.alphabet for c in update.message.text):
-        desc_msg = context.user_data.get("board_desc_msg")
-        try: desc_msg.edit_text(text=config.bad_word_text)
+        img_msg = context.user_data.get("img_msg")
+        try: img_msg.edit_caption(caption=config.bad_word_text, reply_markup=give_up_markup)
         except: pass
         update.message.delete()
         return
@@ -116,41 +115,44 @@ def check_word(update: Update, context: CallbackContext) -> (None):
         img = open(image_location(context), "rb")
 
         context.user_data.get("img_msg").delete()
-        context.user_data.get("board_desc_msg").delete()
 
         if wordle.state == GameState.WON:
             globals.logger.info(f"{update.message.from_user.first_name} won the game")
             context.bot.send_message(globals.LOG_CHANNEL, f"{update.message.from_user.mention_markdown_v2()} won the game", parse_mode='MarkdownV2')
-            img_msg = update.message.reply_photo(photo=img)
-            update.message.reply_text(f"You won, the word was: __*_{wordle.target_word}_*__", parse_mode='MarkdownV2')
+            img_msg = update.message.reply_photo(
+                photo=img,
+                caption=f"You won, the word was: __*_{wordle.target_word}_*__",
+                parse_mode='MarkdownV2')
             context.user_data["menu_msg"] = update.message.reply_text("What do you want to do now?", reply_markup=main_menu_markup)
         elif wordle.state == GameState.LOST:
             globals.logger.info(f"{update.message.from_user.first_name} lost the game")
             context.bot.send_message(globals.LOG_CHANNEL, f"{update.message.from_user.mention_markdown_v2()} lost the game", parse_mode='MarkdownV2')
-            img_msg = update.message.reply_photo(photo=img)
-            update.message.reply_text(f"You lost, the word was: __*_{wordle.target_word}_*__", parse_mode='MarkdownV2')
-            context.user_data["menu_msg"] = update.message.reply_text("What do you want to do now?", reply_markup=main_menu_markup)
-        else:
-            img_msg = update.message.reply_photo(photo=img, reply_markup=give_up_markup)
-        if wordle.state == GameState.PLAYING:
-            try: context.user_data["board_desc_msg"] = update.message.reply_text(text=config.good_word_text)
-            except: pass
-        context.user_data["img_msg"] = img_msg
-
+            img_msg = update.message.reply_photo(
+                photo=img,
+                caption=f"You lost, the word was: __*_{wordle.target_word}_*__",
+                parse_mode='MarkdownV2')
+            context.user_data["menu_msg"] = update.message.reply_text(
+                text="What do you want to do now?",
+                reply_markup=main_menu_markup)
+        elif wordle.state == GameState.PLAYING:
+            context.user_data["img_msg"] = update.message.reply_photo(
+                photo=img,
+                caption=config.good_word_text,
+                reply_markup=give_up_markup)
         img.close()
     else:
         if wordle.state == GameState.PLAYING:
-            desc_msg = context.user_data["board_desc_msg"]
-            if desc_msg is None:
+            img_msg = context.user_data["img_msg"]
+            if img_msg is None:
                 print("message not found")
             elif len(update.message.text) < len(wordle.target_word):
-                try: desc_msg.edit_text(text=config.short_word_text)
+                try: img_msg.edit_caption(caption=config.short_word_text, reply_markup=give_up_markup)
                 except: pass
             elif len(update.message.text) > len(wordle.target_word):
-                try: desc_msg.edit_text(text=config.long_word_text)
+                try: img_msg.edit_caption(caption=config.long_word_text, reply_markup=give_up_markup)
                 except: pass
             elif len(update.message.text) == len(wordle.target_word):
-                try: desc_msg.edit_text(text=config.bad_word_text)
+                try: img_msg.edit_caption(caption=config.bad_word_text, reply_markup=give_up_markup)
                 except: pass
             update.message.delete()
 
@@ -165,11 +167,9 @@ def give_up(update: Update, context: CallbackContext) -> (None):
         start_game(update, context)
         return
     img_msg = context.user_data.get("img_msg")
-    img_msg.delete()
-    with open(image_location(context), "rb") as img:
-        query.message.reply_photo(img)
-    context.user_data.get("board_desc_msg").delete()
-    context.user_data['board_desc_msg'] = query.message.reply_text(fr"You gave up, the word was: __*_{wordle.target_word}_*__", parse_mode='MarkdownV2')
+    img_msg.edit_caption(
+        caption=f"You gave up, the word was: __*_{wordle.target_word}_*__",
+        parse_mode='MarkdownV2')
     context.user_data["menu_msg"] = query.message.reply_text("What do you want to do now?", reply_markup=main_menu_markup)
     wordle.state = GameState.INIT
     globals.logger.info(f"{query.from_user.first_name} gave up")
