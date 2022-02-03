@@ -8,10 +8,11 @@ from markups import *
 import Config as config
 import globals
 from functions import *
+from loggingFunctions import *
 
 def start(update: Update, context: CallbackContext) -> (None):
     """Send a message when the command /start is issued."""
-    log_new_user(update, context)
+    handle_new_user(update, context)
 
     context.user_data["name"] = update.message.from_user.first_name
     context.user_data["user_id"] = update.message.from_user.id
@@ -37,8 +38,7 @@ def set_language(update: Update, context: CallbackContext) -> (None):
     else:
         query.answer()
         context.user_data["language"] = lan
-        globals.logger.info(f"{query.from_user.first_name} changed language to {lan}")
-        context.bot.send_message(globals.LOG_CHANNEL, f"{query.from_user.mention_markdown_v2()} changed language to _{lan}_", parse_mode='MarkdownV2')
+        log_language_change(context, query.from_user, lan)
     show_main_menu(update, context)
 
 
@@ -54,8 +54,8 @@ def start_game(update: Update, context: CallbackContext) -> (None):
     if menu_msg != None:
         try:
             menu_msg.delete()
-        except:
-            globals.logger.info("could not delete menu message, too much time passed")
+        except Exception as e:
+            print(e)
             pass
     wordle = Wordle(context.user_data.get("language", "english"))
     context.user_data["wordle"] = wordle
@@ -73,8 +73,7 @@ def start_game(update: Update, context: CallbackContext) -> (None):
 
     if query == None:
         update = update_backup.message
-    globals.logger.info(f"{update.from_user.first_name} started a new game, word: {wordle.target_word}")
-    context.bot.send_message(globals.LOG_CHANNEL, f"{update.from_user.mention_markdown_v2()} started a new game, word: *_{wordle.target_word}_*\n", parse_mode='MarkdownV2')
+    log_new_game(context, update.from_user, wordle.target_word)
 
 
 def check_word(update: Update, context: CallbackContext) -> (None):
@@ -94,8 +93,7 @@ def check_word(update: Update, context: CallbackContext) -> (None):
         start_game(update, context)
         return
 
-    globals.logger.info(f"{update.message.from_user.first_name} guessed {update.message.text}")
-    context.bot.send_message(globals.LOG_CHANNEL, f"{update.message.from_user.mention_markdown_v2()} guessed: _{update.message.text}_", parse_mode='MarkdownV2')
+    log_user_guess(context, update.message.from_user, update.message.text)
     wordle = context.user_data.get("wordle", None)
     if wordle == None:
         start(update, context)
@@ -117,16 +115,14 @@ def check_word(update: Update, context: CallbackContext) -> (None):
         context.user_data.get("img_msg").delete()
 
         if wordle.state == GameState.WON:
-            globals.logger.info(f"{update.message.from_user.first_name} won the game")
-            context.bot.send_message(globals.LOG_CHANNEL, f"{update.message.from_user.mention_markdown_v2()} won the game", parse_mode='MarkdownV2')
+            log_user_won(context, update.message.from_user)
             img_msg = update.message.reply_photo(
                 photo=img,
                 caption=f"You won, the word was: __*_{wordle.target_word}_*__",
                 parse_mode='MarkdownV2')
             context.user_data["menu_msg"] = update.message.reply_text("What do you want to do now?", reply_markup=main_menu_markup)
         elif wordle.state == GameState.LOST:
-            globals.logger.info(f"{update.message.from_user.first_name} lost the game")
-            context.bot.send_message(globals.LOG_CHANNEL, f"{update.message.from_user.mention_markdown_v2()} lost the game", parse_mode='MarkdownV2')
+            log_user_lost(context, update.message.from_user, wordle.target_word)
             img_msg = update.message.reply_photo(
                 photo=img,
                 caption=f"You lost, the word was: __*_{wordle.target_word}_*__",
@@ -172,8 +168,7 @@ def give_up(update: Update, context: CallbackContext) -> (None):
         parse_mode='MarkdownV2')
     context.user_data["menu_msg"] = query.message.reply_text("What do you want to do now?", reply_markup=main_menu_markup)
     wordle.state = GameState.INIT
-    globals.logger.info(f"{query.from_user.first_name} gave up")
-    context.bot.send_message(globals.LOG_CHANNEL, f"{query.from_user.mention_markdown_v2()} gave up", parse_mode='MarkdownV2')
+    log_user_give_up(context, update.callback_query.from_user)
 
 
 def language_select(update: Update, context: CallbackContext) -> (None):
