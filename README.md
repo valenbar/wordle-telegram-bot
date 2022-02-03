@@ -25,5 +25,6 @@ This is how it looks like:
 - [ ] Add resources.txt
 - [ ] Notify if guess is in the wrong language
 - [ ] Count game wins per user
-- [ ] Feedback option
+- [ ] Add Feedback option
 - [ ] Language change starts new game
+- [ ] Add Hard-mode
