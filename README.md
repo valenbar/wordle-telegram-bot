@@ -4,9 +4,12 @@ Heavily inspired by: https://www.powerlanguage.co.uk/wordle/
 
 Try it out: [@TheWordleBot](https://www.t.me/TheWordleBot)
 
-Example output:
-
+This is how it looks like:
 ![This is an image](https://github.com/valenbar/wordle-telegram-bot/blob/main/res/sample-output.png?raw=true)
+
+## Features
+- Play as many games as you want
+- Languages: English, German, Swedish
 
 ## TODO
 
