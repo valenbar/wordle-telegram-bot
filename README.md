@@ -1,4 +1,4 @@
-# wordle-telegram-bot
+# Wordle Telegram Bot
 A unofficial Wordle game that you can play in Telegram.
 Heavily inspired by: https://www.powerlanguage.co.uk/wordle/
 
