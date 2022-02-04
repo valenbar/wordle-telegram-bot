@@ -4,6 +4,7 @@ import json
 import random
 
 from ImageExport import ImageExport, WordleColors
+import globals
 
 class Outcome(enum.Enum):
     FINISHED = 1
@@ -53,16 +54,18 @@ class Wordle():
     def try_word(self, word: str):
         word = word.upper()
         try:
-            with open(f"used_words_{self.language}.json", "r", encoding="utf-8") as f:
+            with open(f"data/used_words_{self.language}.json", "r", encoding="utf-8") as f:
                 used_words = json.load(f)
-            if used_words.get(word, None) is None:
-                used_words[word] = 1
-            else:
-                used_words.update({word: used_words[word] + 1})
-            with open(f"used_words_{self.language}.json", "w", encoding="utf-8") as f:
-                json.dump(used_words, f, indent=4, ensure_ascii=False)
-        except:
-            pass
+        except FileNotFoundError:
+            globals.logger.info(f"data/used_words_{self.language}.json not found, creating it")
+            used_words = {}
+        if used_words.get(word, None) is None:
+            used_words[word] = 1
+        else:
+            used_words.update({word: used_words[word] + 1})
+        with open(f"data/used_words_{self.language}.json", "w", encoding="utf-8") as f:
+            json.dump(used_words, f, indent=4, ensure_ascii=False)
+
         if self.state == GameState.LOST or self.state == GameState.WON:
             return None
         result = self.check_rules(word)
