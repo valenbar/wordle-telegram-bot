@@ -60,6 +60,22 @@ def log_user_give_up(context: CallbackContext, user: User) -> (None):
             text=f"{user.mention_markdown_v2()} gave up",
             parse_mode='MarkdownV2')
 
+def log_user_command_start(context: CallbackContext, user: User) -> (None):
+    globals.logger.info(f"{user.first_name} executed /start")
+    if globals.LOG_CHANNEL:
+        context.bot.send_message(
+            chat_id=globals.LOG_CHANNEL,
+            text=f"{user.mention_markdown_v2()} executed /start",
+            parse_mode='MarkdownV2')
+
+def log_user_command_help(context: CallbackContext, user: User) -> (None):
+    globals.logger.info(f"{user.first_name} executed /help")
+    if globals.LOG_CHANNEL:
+        context.bot.send_message(
+            chat_id=globals.LOG_CHANNEL,
+            text=f"{user.mention_markdown_v2()} executed /help",
+            parse_mode='MarkdownV2')
+
 def log_user_monti(context: CallbackContext, user: User) -> (None):
     globals.logger.info(f"{user.first_name} typed MONTI")
     if globals.LOG_CHANNEL:

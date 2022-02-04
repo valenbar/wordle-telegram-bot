@@ -19,7 +19,10 @@ def start(update: Update, context: CallbackContext) -> (None):
     context.user_data["language"] = "english"
     context.user_data["board_size"] = "5x6"
 
-    help_command(update, context)
+    update.message.reply_text(text=config.help_text)
+    update.message.reply_text(text=f"Current language: _{context.user_data.get('language')}_", parse_mode='MarkdownV2')
+    context.user_data['menu_msg'] = update.message.reply_text("What do you want to do now?", reply_markup=main_menu_markup)
+    log_user_command_start(context, update.message.from_user)
 
 
 def help_command(update: Update, context: CallbackContext) -> (None):
@@ -27,6 +30,7 @@ def help_command(update: Update, context: CallbackContext) -> (None):
     update.message.reply_text(text=config.help_text)
     update.message.reply_text(text=f"Current language: _{context.user_data.get('language')}_", parse_mode='MarkdownV2')
     context.user_data['menu_msg'] = update.message.reply_text("What do you want to do now?", reply_markup=main_menu_markup)
+    log_user_command_help(context, update.message.from_user)
 
 
 def set_language(update: Update, context: CallbackContext) -> (None):
