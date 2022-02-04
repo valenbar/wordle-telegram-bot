@@ -29,3 +29,11 @@ def initialize():
 
     global alphabet
     alphabet = "abcdefghijklmnopqrstuvwxyzäöüßABCDEFGHIJKLMNOPQRSTUVWXYZÄÖÜẞ"+"Åå"
+
+    # crete necessary folders
+    if not os.path.exists("data"):
+        logger.info("Creating data directory...")
+        os.makedirs("data")
+    if not os.path.exists("img"):
+        logger.info("Creating img directory...")
+        os.makedirs("img")
