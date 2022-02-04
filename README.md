@@ -12,6 +12,12 @@ This is how it looks like:
 - Play as many games as you want
 - Languages: English, German, Swedish
 
+## Setup
+
+- Configure [example.env](https://github.com/valenbar/wordle-telegram-bot/blob/main/example.env)
+- run `pip install -r requirements.txt`
+- run `python wordle-telegram-bot.py`
+
 ## TODO
 
 - [x] Feature to change language
@@ -21,8 +27,8 @@ This is how it looks like:
 - [x] Remove yellow letter if that letter is already green and there is no other
 - [x] Add more markdown to log channel messages
 - [x] Save all word guesses to a dictionary to find most common guesses
+- [x] Add resources.txt
 - [ ] Option to change board size
-- [ ] Add resources.txt
 - [ ] Notify if guess is in the wrong language
 - [ ] Count game wins/loses per user
 - [ ] Add Feedback option
