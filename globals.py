@@ -24,7 +24,7 @@ def initialize():
     # tell the handler to use this format
     console.setFormatter(formatter)
     # add the handler to the root logger
-    # logging.getLogger('').addHandler(console)
+    logging.getLogger('').addHandler(console)
     logger = logging.getLogger(__name__)
 
     global alphabet

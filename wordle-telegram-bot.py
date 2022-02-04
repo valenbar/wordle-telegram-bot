@@ -198,7 +198,8 @@ def main() -> (None):
     # on non command i.e message - echo the message on Telegram
     dispatcher.add_handler(MessageHandler(Filters.text & ~Filters.command, check_word))
 
-    updater.bot.send_message(globals.LOG_CHANNEL, "Wordle Bot restarting...")
+    if globals.LOG_CHANNEL:
+        updater.bot.send_message(globals.LOG_CHANNEL, "Wordle Bot starting...")
     # Start the Bot
     updater.start_polling()
 
