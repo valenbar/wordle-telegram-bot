@@ -6,7 +6,7 @@ Try it out: [@TheWordleBot](https://www.t.me/TheWordleBot)
 
 This is how it looks like:
 
-![This is an image](https://github.com/valenbar/wordle-telegram-bot/blob/main/res/sample-output.png?raw=true)
+![This is an image](https://github.com/valenbar/wordle-telegram-bot/blob/main/assets/sample-output.png?raw=true)
 
 ## Features
 - Play as many games as you want

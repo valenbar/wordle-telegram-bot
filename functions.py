@@ -10,7 +10,7 @@ from loggingFunctions import *
 
 def monti_on(update: Update, context: CallbackContext) -> (None):
     try:
-        with open("./res/montimontimonti.webp", "rb") as f:
+        with open("./assets/montimontimonti.webp", "rb") as f:
             monti = f.read()
         update.message.reply_sticker(sticker=monti)
         context.user_data["flip"] = True

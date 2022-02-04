@@ -20,7 +20,7 @@ class ImageExport():
         self.board_y = y
 
     def get_image(self, color_matrix, guessed_words):
-        fnt=ImageFont.truetype('./res/FiraCode-SemiBold.ttf', size=40)
+        fnt=ImageFont.truetype('./assets/FiraCode-SemiBold.ttf', size=40)
         letter_size = {}
         for c in self.alphabet:
             letter_size[c] = fnt.getsize(c)
