@@ -1,6 +1,3 @@
-from ast import Call
-import json
-from numpy import number
 
 from telegram import Update, User
 from telegram.ext import CallbackContext

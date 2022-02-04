@@ -1,6 +1,6 @@
-from PIL import Image
 import json
 
+from PIL import Image
 from telegram.ext import CallbackContext
 from telegram import Update
 

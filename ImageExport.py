@@ -1,3 +1,4 @@
+
 from PIL import Image, ImageDraw, ImageFont, ImageColor
 
 class WordleColors:
