@@ -1,10 +1,16 @@
-# wordle-telegram-bot
-A telegram bot for playing wordles
+# Wordle Telegram Bot
+A unofficial Wordle game that you can play in Telegram.
+Heavily inspired by: https://www.powerlanguage.co.uk/wordle/
+
 Try it out: [@TheWordleBot](https://www.t.me/TheWordleBot)
 
-Example output:
+This is how it looks like:
 
 ![This is an image](https://github.com/valenbar/wordle-telegram-bot/blob/main/res/sample-output.png?raw=true)
+
+## Features
+- Play as many games as you want
+- Languages: English, German, Swedish
 
 ## TODO
 
@@ -18,6 +24,7 @@ Example output:
 - [ ] Option to change board size
 - [ ] Add resources.txt
 - [ ] Notify if guess is in the wrong language
-- [ ] Count game wins per user
-- [ ] Feedback option
+- [ ] Count game wins/loses per user
+- [ ] Add Feedback option
 - [ ] Language change starts new game
+- [ ] Add Hard-mode
