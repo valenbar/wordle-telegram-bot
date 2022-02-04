@@ -24,7 +24,7 @@ This is how it looks like:
 - [ ] Option to change board size
 - [ ] Add resources.txt
 - [ ] Notify if guess is in the wrong language
-- [ ] Count game wins per user
+- [ ] Count game wins/loses per user
 - [ ] Add Feedback option
 - [ ] Language change starts new game
 - [ ] Add Hard-mode
