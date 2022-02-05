@@ -76,7 +76,7 @@ def start_game(update: Update, context: CallbackContext) -> (None):
     with open(image_location(context), "rb") as img:
         img_msg = update.message.reply_photo(
             photo=img,
-            caption=f"language: _{context.user_data.get('language', 'not sure')}_, hardmode: {hardmode}, *Good luck\!*",
+            caption=f"language: _{context.user_data.get('language', 'not sure')}_, hardmode: _{hardmode}_, *Good luck\!*",
             parse_mode='MarkdownV2',
             reply_markup=give_up_markup)
     context.user_data["img_msg"] = img_msg

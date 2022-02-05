@@ -7,8 +7,8 @@ help_text = "Game rules:\n" \
             "1. You need to guess a 5 letter word.\n" \
             "2. A yellow letter means that the letter is in the word, but in the wrong position.\n" \
             "3. A green letter means that the letter is in the word, and in the right position.\n" \
-            "4. You have 6 guesses.\n\n" \
-            "You can turn on hardmode, which makes the words to guess harder / less common\n" \
+            "4. You have 6 guesses.\n" \
+            "You can turn on hardmode, which makes the words to guess harder / less common\n\n" \
             "Commands:\n" \
             "/start - Resets the bot\n" \
             "/help - Shows this message"
