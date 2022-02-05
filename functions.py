@@ -43,9 +43,9 @@ def image_location(context: CallbackContext):
 def show_main_menu(update: Update, context: CallbackContext):
     menu_msg = context.user_data.get("menu_msg")
     if menu_msg is None:
-        menu_msg = update.message.reply_text("Choose an option:", reply_markup=main_menu_markup)
+        menu_msg = update.message.reply_text("Choose an option:", reply_markup=get_main_menu_markup(context))
     else:
-        menu_msg = menu_msg.edit_text("Choose an option:", reply_markup=main_menu_markup)
+        menu_msg = menu_msg.edit_text("Choose an option:", reply_markup=get_main_menu_markup(context))
     context.user_data["menu_msg"] = menu_msg
 
 def show_language_menu(update: Update, context: CallbackContext):

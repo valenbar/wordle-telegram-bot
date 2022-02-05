@@ -39,10 +39,13 @@ class Wordle():
             self.wordle_dict_small = json.load(f)
 
 
-    def new_game(self, x: int, y: int):
+    def new_game(self, x: int, y: int, hardmode: bool = False):
         self.board_x = x
         self.board_y = y
-        self.target_word = random.choice(self.wordle_dict_small[f"words_{x}"])
+        if hardmode:
+            self.target_word = random.choice([word for word in self.wordle_dict[f"words_{x}"] if word not in self.wordle_dict_small[f"words_{x}"]])
+        else:
+            self.target_word = random.choice(self.wordle_dict_small[f"words_{x}"])
         self.guessed_words = []
         self.state = GameState.PLAYING
         self.c_matrix = [[WordleColors.gray for i in range(x)] for j in range(y)]

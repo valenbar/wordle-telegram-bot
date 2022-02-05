@@ -1,15 +1,7 @@
 
-from telegram import InlineKeyboardButton, InlineKeyboardMarkup, ReplyKeyboardMarkup, KeyboardButton
+from telegram import InlineKeyboardButton, InlineKeyboardMarkup
+from telegram.ext import CallbackContext
 
-settings_markup = InlineKeyboardMarkup(
-    [
-        [
-            InlineKeyboardButton("Change language", callback_data="set_lan"),
-            InlineKeyboardButton("Change Word Length (placeholder)", callback_data="set_word_length"),
-            InlineKeyboardButton("Change Word Count (placeholder)", callback_data="set_word_count"),
-            InlineKeyboardButton("Change difficulty (placeholder)", callback_data="set_difficulty")
-        ]
-    ])
 
 language_menu_markup = InlineKeyboardMarkup(
     [
@@ -27,11 +19,18 @@ give_up_markup = InlineKeyboardMarkup(
         ]
     ])
 
-main_menu_markup = InlineKeyboardMarkup(
-    [
+def get_main_menu_markup(context: CallbackContext) -> (InlineKeyboardMarkup):
+    """Get the main menu markup"""
+    if context.user_data.get("hardmode", False):
+        state = "On"
+    else:
+        state = "Off"
+    return InlineKeyboardMarkup(
         [
-            InlineKeyboardButton("New Game", callback_data="new_game"),
-            InlineKeyboardButton("Change language", callback_data="change_language")
-        ]
-    ])
+            [
+                InlineKeyboardButton("New Game", callback_data="new_game"),
+                InlineKeyboardButton("Change language", callback_data="change_language"),
+                InlineKeyboardButton(f"Hardmode: {state}", callback_data="hardmode")
+            ]
+        ])
 

@@ -21,7 +21,7 @@ def start(update: Update, context: CallbackContext) -> (None):
 
     update.message.reply_text(text=config.help_text)
     update.message.reply_text(text=f"Current language: _{context.user_data.get('language')}_", parse_mode='MarkdownV2')
-    context.user_data['menu_msg'] = update.message.reply_text("What do you want to do now?", reply_markup=main_menu_markup)
+    context.user_data['menu_msg'] = update.message.reply_text("What do you want to do now?", reply_markup=get_main_menu_markup(context))
     log_user_command_start(context, update.message.from_user)
 
 
@@ -29,7 +29,7 @@ def help_command(update: Update, context: CallbackContext) -> (None):
     """Send a message when the command /help is issued."""
     update.message.reply_text(text=config.help_text)
     update.message.reply_text(text=f"Current language: _{context.user_data.get('language')}_", parse_mode='MarkdownV2')
-    context.user_data['menu_msg'] = update.message.reply_text("What do you want to do now?", reply_markup=main_menu_markup)
+    context.user_data['menu_msg'] = update.message.reply_text("What do you want to do now?", reply_markup=get_main_menu_markup(context))
     log_user_command_help(context, update.message.from_user)
 
 
@@ -64,7 +64,10 @@ def start_game(update: Update, context: CallbackContext) -> (None):
     wordle = Wordle(context.user_data.get("language", "english"))
     context.user_data["wordle"] = wordle
     board_size = context.user_data.get("board_size", "5x6").split("x")
-    img = wordle.new_game(int(board_size[0]), int(board_size[1]))
+    img = wordle.new_game(
+        x=int(board_size[0]),
+        y=int(board_size[1]),
+        hardmode=context.user_data.get("hardmode", False))
     img.save(image_location(context))
 
     with open(image_location(context), "rb") as img:
@@ -124,7 +127,7 @@ def check_word(update: Update, context: CallbackContext) -> (None):
                 photo=img,
                 caption=f"You won, the word was: __*_{wordle.target_word}_*__",
                 parse_mode='MarkdownV2')
-            context.user_data["menu_msg"] = update.message.reply_text("What do you want to do now?", reply_markup=main_menu_markup)
+            context.user_data["menu_msg"] = update.message.reply_text("What do you want to do now?", reply_markup=get_main_menu_markup(context))
         elif wordle.state == GameState.LOST:
             log_user_lost(context, update.message.from_user, wordle.target_word)
             img_msg = update.message.reply_photo(
@@ -133,7 +136,7 @@ def check_word(update: Update, context: CallbackContext) -> (None):
                 parse_mode='MarkdownV2')
             context.user_data["menu_msg"] = update.message.reply_text(
                 text="What do you want to do now?",
-                reply_markup=main_menu_markup)
+                reply_markup=get_main_menu_markup(context))
         elif wordle.state == GameState.PLAYING:
             context.user_data["img_msg"] = update.message.reply_photo(
                 photo=img,
@@ -170,7 +173,7 @@ def give_up(update: Update, context: CallbackContext) -> (None):
     img_msg.edit_caption(
         caption=f"You gave up, the word was: __*_{wordle.target_word}_*__",
         parse_mode='MarkdownV2')
-    context.user_data["menu_msg"] = query.message.reply_text("What do you want to do now?", reply_markup=main_menu_markup)
+    context.user_data["menu_msg"] = query.message.reply_text("What do you want to do now?", reply_markup=get_main_menu_markup(context))
     wordle.state = GameState.INIT
     log_user_give_up(context, update.callback_query.from_user)
 
@@ -180,6 +183,18 @@ def language_select(update: Update, context: CallbackContext) -> (None):
     query = update.callback_query
     query.answer()
     show_language_menu(update, context)
+
+
+def toggle_hardmode(update: Update, context: CallbackContext) -> (None):
+    query = update.callback_query
+    query.answer()
+    hardmode = context.user_data.get('hardmode', False)
+    context.user_data['hardmode'] = not hardmode
+    log_user_toggle_hardmode(context=context, user=update.callback_query.from_user, hardmode=hardmode)
+    if query.message != None:
+        query.message.edit_reply_markup(reply_markup=get_main_menu_markup(context))
+    else:
+        context.user_data["menu_msg"] = query.message.reply_text(text="What do you want to do now?", reply_markup=get_main_menu_markup(context))
 
 
 def main() -> (None):
@@ -198,6 +213,7 @@ def main() -> (None):
     dispatcher.add_handler(CallbackQueryHandler(give_up, pattern="give_up"))
     dispatcher.add_handler(CallbackQueryHandler(start_game, pattern="new_game"))
     dispatcher.add_handler(CallbackQueryHandler(language_select, pattern="change_language"))
+    dispatcher.add_handler(CallbackQueryHandler(toggle_hardmode, pattern="hardmode"))
 
     # on non command i.e message - echo the message on Telegram
     dispatcher.add_handler(MessageHandler(Filters.text & ~Filters.command, check_word))

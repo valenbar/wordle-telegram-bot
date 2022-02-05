@@ -21,11 +21,14 @@ def log_language_change(context: CallbackContext, user: User, language: str) -> 
             parse_mode='MarkdownV2')
 
 def log_new_game(context: CallbackContext, user: User, target_word: str) -> (None):
-    globals.logger.info(f"{user.first_name} started a new game, word: {target_word}")
+    hardmode = context.user_data.get('hardmode', False)
+    globals.logger.info(f"{user.first_name} started a new game, word: {target_word}, hardmode: {hardmode}")
     if globals.LOG_CHANNEL:
         context.bot.send_message(
             chat_id=globals.LOG_CHANNEL,
-            text=f"{user.mention_markdown_v2()} started a new game, word: *_{target_word}_*\n",
+            text=f"{user.mention_markdown_v2()} started a new game, word: *_{target_word}_*\n" \
+                f"language: *{context.user_data.get('language')}*\n" \
+                f"hardmode: *{hardmode}*",
             parse_mode='MarkdownV2')
 
 def log_user_guess(context: CallbackContext, user: User, word: str) -> (None):
@@ -74,6 +77,14 @@ def log_user_command_help(context: CallbackContext, user: User) -> (None):
         context.bot.send_message(
             chat_id=globals.LOG_CHANNEL,
             text=f"{user.mention_markdown_v2()} executed /help",
+            parse_mode='MarkdownV2')
+
+def log_user_toggle_hardmode(context: CallbackContext, user: User, hardmode: bool) -> (None):
+    globals.logger.info(f"{user.first_name} toggled hardmode: {hardmode}")
+    if globals.LOG_CHANNEL:
+        context.bot.send_message(
+            chat_id=globals.LOG_CHANNEL,
+            text=f"{user.mention_markdown_v2()} toggled hardmode: *{hardmode}*",
             parse_mode='MarkdownV2')
 
 def log_user_monti(context: CallbackContext, user: User) -> (None):
