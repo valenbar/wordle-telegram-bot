@@ -18,6 +18,7 @@ def start(update: Update, context: CallbackContext) -> (None):
     context.user_data["user_id"] = update.message.from_user.id
     context.user_data["language"] = "english"
     context.user_data["board_size"] = "5x6"
+    context.user_data["hardmode"] = False
 
     update.message.reply_text(text=config.help_text)
     update.message.reply_text(text=f"Current language: _{context.user_data.get('language')}_", parse_mode='MarkdownV2')
@@ -70,10 +71,12 @@ def start_game(update: Update, context: CallbackContext) -> (None):
         hardmode=context.user_data.get("hardmode", False))
     img.save(image_location(context))
 
+    if context.user_data.get("hardmode", False): hardmode = "On"
+    else: hardmode = "Off"
     with open(image_location(context), "rb") as img:
         img_msg = update.message.reply_photo(
             photo=img,
-            caption=f"language: _{context.user_data.get('language', 'not sure')}_, *Good luck\!*",
+            caption=f"language: _{context.user_data.get('language', 'not sure')}_, hardmode: {hardmode}, *Good luck\!*",
             parse_mode='MarkdownV2',
             reply_markup=give_up_markup)
     context.user_data["img_msg"] = img_msg
