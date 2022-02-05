@@ -28,9 +28,9 @@ This is how it looks like:
 - [x] Add more markdown to log channel messages
 - [x] Save all word guesses to a dictionary to find most common guesses
 - [x] Add resources.txt
+- [x] Add Hard-mode
 - [ ] Option to change board size
 - [ ] Notify if guess is in the wrong language
 - [ ] Count game wins/loses per user
 - [ ] Add Feedback option
 - [ ] Language change starts new game
-- [ ] Add Hard-mode
