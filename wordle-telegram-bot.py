@@ -193,7 +193,7 @@ def toggle_hardmode(update: Update, context: CallbackContext) -> (None):
     query.answer()
     hardmode = context.user_data.get('hardmode', False)
     context.user_data['hardmode'] = not hardmode
-    log_user_toggle_hardmode(context=context, user=update.callback_query.from_user, hardmode=hardmode)
+    log_user_toggle_hardmode(context=context, user=update.callback_query.from_user)
     if query.message != None:
         query.message.edit_reply_markup(reply_markup=get_main_menu_markup(context))
     else:

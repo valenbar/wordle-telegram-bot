@@ -79,7 +79,8 @@ def log_user_command_help(context: CallbackContext, user: User) -> (None):
             text=f"{user.mention_markdown_v2()} executed /help",
             parse_mode='MarkdownV2')
 
-def log_user_toggle_hardmode(context: CallbackContext, user: User, hardmode: bool) -> (None):
+def log_user_toggle_hardmode(context: CallbackContext, user: User) -> (None):
+    hardmode = context.user_data.get('hardmode', False)
     globals.logger.info(f"{user.first_name} toggled hardmode: {hardmode}")
     if globals.LOG_CHANNEL:
         context.bot.send_message(
