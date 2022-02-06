@@ -2,12 +2,18 @@
 from PIL import Image, ImageDraw, ImageFont, ImageColor
 
 class WordleColors:
-    black = (18, 18, 18)
-    gray = (58, 58, 60)
-    green = (82, 141, 77)
-    yellow = (180, 159, 58)
-    lgray = (55, 55, 55)
+    # black = (18, 18, 18)
+    # gray = (58, 58, 60)
+    # green = (82, 141, 77)
+    # yellow = (180, 159, 58)
+    # lgray = (55, 55, 55)
+    # white = (255, 255, 255)
+    gray = (51, 51, 51)
+    green = (0, 196, 75)
+    yellow = (193, 143, 57)
     white = (255, 255, 255)
+    blue = (14, 22, 33)
+    lgray = (55, 55, 55)
 
 class ImageExport():
 
@@ -33,7 +39,7 @@ class ImageExport():
         colors = color_matrix
         LETTER_OFFSET = 4
 
-        im = Image.new('RGB' , (board_width +  2, board_height + 2), color=c.black)
+        im = Image.new('RGB' , (board_width +  2, board_height + 2), color=c.blue)
         draw = ImageDraw.Draw(im)
 
         for i in range(0, self.board_x):
@@ -41,7 +47,7 @@ class ImageExport():
                 if j < len(guessed_words):
                     draw.rectangle(
                         [(i * TILE + LINE_THICKNESS / 2, j * TILE + LINE_THICKNESS / 2), ((i + 1) * TILE + LINE_THICKNESS / 2, (j + 1) * TILE + LINE_THICKNESS / 2)],
-                        width=LINE_THICKNESS, fill=colors[j][i], outline=c.black)
+                        width=LINE_THICKNESS, fill=colors[j][i], outline=c.blue)
                 if len(guessed_words) > j:
                     l_pos = (   i * TILE + TILE / 2 - letter_size[guessed_words[j][i]][0] / 2 + LINE_THICKNESS / 2,
                                 j * TILE + TILE / 2 - letter_size[guessed_words[j][i]][1] / 2 - LETTER_OFFSET+LINE_THICKNESS / 2)
@@ -56,7 +62,7 @@ class ImageExport():
                             (i + 1) * TILE + LINE_THICKNESS / 2 - shrink_rec,
                             (j + 1) * TILE + LINE_THICKNESS / 2 - shrink_rec
                         )],
-                        width=2, fill=c.black, outline=c.lgray
+                        width=2, fill=c.blue, outline=c.lgray
                     )
                 if len(guessed_words) > j:
                     draw.text(l_pos, guessed_words[j][i], fill=c.white, font=fnt)
