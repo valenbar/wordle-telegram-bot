@@ -29,8 +29,8 @@ This is how it looks like:
 - [x] Save all word guesses to a dictionary to find most common guesses
 - [x] Add resources.txt
 - [x] Add Hard-mode
-- [ ] Option to change board size
+- [x] Option to change board size
+- [x] Add Feedback option
 - [ ] Notify if guess is in the wrong language
 - [ ] Count game wins/loses per user
-- [ ] Add Feedback option
 - [ ] Language change starts new game
