@@ -7,10 +7,10 @@ import globals
 def log_new_user(update: Update, context: CallbackContext, name: str, id: int, total_users: int) -> None:
     globals.logger.info(f"new user connected: {name} {id}")
     if globals.LOG_CHANNEL:
-        context.bot.send_message(
+        msg = context.bot.send_message(
             chat_id=globals.LOG_CHANNEL,
             text=f"new user: {update.message.from_user.mention_markdown_v2()} \nID: `{update.message.from_user.id}`\nTotal uniqe users: `{total_users}`",
-            parse_mode='MarkdownV2')
+        context.bot.pin_chat_message(globals.LOG_CHANNEL, msg.message_id, disable_notification=True)
 
 def log_language_change(context: CallbackContext, user: User, language: str) -> None:
     globals.logger.info(f"{user.first_name} changed language to {language}")
