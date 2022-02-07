@@ -8,7 +8,7 @@ import globals
 from markups import *
 from loggingFunctions import *
 
-def flip_image(context: CallbackContext, img: Image) -> (Image):
+def flip_image(context: CallbackContext, img: Image) -> Image:
     try:
         if context.user_data.get('flip', False):
             rotate = context.user_data.get('flips', 0) % 5
@@ -20,7 +20,7 @@ def flip_image(context: CallbackContext, img: Image) -> (Image):
         print(e)
         pass
 
-def handle_new_user(update: Update, context: CallbackContext):
+def handle_new_user(update: Update, context: CallbackContext) -> None:
     new_user = {
                     "name": update.message.from_user.first_name,
                     "id": update.message.from_user.id
@@ -37,10 +37,10 @@ def handle_new_user(update: Update, context: CallbackContext):
         with open("data/unique_users.json", "w", encoding="utf-8") as f:
             json.dump(users, f, indent=4, ensure_ascii=False)
 
-def image_location(context: CallbackContext):
+def image_location(context: CallbackContext) -> str:
     return "./img/out" + str(context.user_data.get('user_id', '0000')) + ".png"
 
-def show_main_menu(update: Update, context: CallbackContext):
+def show_main_menu(update: Update, context: CallbackContext) -> None:
     menu_msg = context.user_data.get("menu_msg")
     if menu_msg is None:
         menu_msg = update.message.reply_text("Choose an option:", reply_markup=get_main_menu_markup(context))
@@ -48,7 +48,7 @@ def show_main_menu(update: Update, context: CallbackContext):
         menu_msg = menu_msg.edit_text("Choose an option:", reply_markup=get_main_menu_markup(context))
     context.user_data["menu_msg"] = menu_msg
 
-def show_language_menu(update: Update, context: CallbackContext):
+def show_language_menu(update: Update, context: CallbackContext) -> None:
     menu_msg = context.user_data.get('menu_msg')
     if menu_msg is None:
         try:
@@ -65,7 +65,7 @@ def show_language_menu(update: Update, context: CallbackContext):
             pass
     context.user_data["menu_msg"] = menu_msg
 
-def monti_on(update: Update, context: CallbackContext) -> (None):
+def monti_on(update: Update, context: CallbackContext) -> None:
     try:
         with open("./assets/montimontimonti.webp", "rb") as f:
             monti = f.read()

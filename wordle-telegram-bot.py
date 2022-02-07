@@ -10,7 +10,7 @@ import globals
 from functions import *
 from loggingFunctions import *
 
-def start(update: Update, context: CallbackContext) -> (None):
+def start(update: Update, context: CallbackContext) -> None:
     """Send a message when the command /start is issued."""
     handle_new_user(update, context)
 
@@ -26,7 +26,7 @@ def start(update: Update, context: CallbackContext) -> (None):
     log_user_command_start(context, update.message.from_user)
 
 
-def help_command(update: Update, context: CallbackContext) -> (None):
+def help_command(update: Update, context: CallbackContext) -> None:
     """Send a message when the command /help is issued."""
     update.message.reply_text(text=config.help_text)
     update.message.reply_text(text=f"Current language: _{context.user_data.get('language')}_", parse_mode='MarkdownV2')
@@ -34,7 +34,7 @@ def help_command(update: Update, context: CallbackContext) -> (None):
     log_user_command_help(context, update.message.from_user)
 
 
-def set_language(update: Update, context: CallbackContext) -> (None):
+def set_language(update: Update, context: CallbackContext) -> None:
     """Send a message when the command /set_language is issued."""
     query = update.callback_query
     lan = query.data.split(":")[1]
@@ -47,7 +47,7 @@ def set_language(update: Update, context: CallbackContext) -> (None):
     show_main_menu(update, context)
 
 
-def start_game(update: Update, context: CallbackContext) -> (None):
+def start_game(update: Update, context: CallbackContext) -> None:
     """Starts a new game"""
     query = update.callback_query
     update_backup = update
@@ -86,7 +86,7 @@ def start_game(update: Update, context: CallbackContext) -> (None):
     log_new_game(context, update.from_user, wordle.target_word)
 
 
-def check_word(update: Update, context: CallbackContext) -> (None):
+def check_word(update: Update, context: CallbackContext) -> None:
     context.user_data['name'] = update.message.from_user.first_name
 
     # remove message with forbidden chars
@@ -163,7 +163,7 @@ def check_word(update: Update, context: CallbackContext) -> (None):
             update.message.delete()
 
 
-def give_up(update: Update, context: CallbackContext) -> (None):
+def give_up(update: Update, context: CallbackContext) -> None:
     """Send a message when the command /give_up is issued."""
     if context.user_data.get('flip', False): monti_off(context)
     query = update.callback_query
@@ -181,14 +181,14 @@ def give_up(update: Update, context: CallbackContext) -> (None):
     log_user_give_up(context, update.callback_query.from_user)
 
 
-def language_select(update: Update, context: CallbackContext) -> (None):
+def language_select(update: Update, context: CallbackContext) -> None:
     """Send a message when the command /language is issued."""
     query = update.callback_query
     query.answer()
     show_language_menu(update, context)
 
 
-def toggle_hardmode(update: Update, context: CallbackContext) -> (None):
+def toggle_hardmode(update: Update, context: CallbackContext) -> None:
     query = update.callback_query
     query.answer()
     hardmode = context.user_data.get('hardmode', False)
@@ -200,7 +200,7 @@ def toggle_hardmode(update: Update, context: CallbackContext) -> (None):
         context.user_data["menu_msg"] = query.message.reply_text(text="What do you want to do now?", reply_markup=get_main_menu_markup(context))
 
 
-def main() -> (None):
+def main() -> None:
     """Start the bot."""
     # Create the Updater and pass it your bot's token.
     updater = Updater(globals.API_TOKEN, persistence=PicklePersistence(filename="wordle_bot_data"))
