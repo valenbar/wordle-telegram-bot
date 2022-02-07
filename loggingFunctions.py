@@ -33,7 +33,7 @@ def log_new_game(context: CallbackContext, user: User, target_word: str) -> None
             chat_id=globals.LOG_CHANNEL,
             text=f"{user.mention_markdown_v2()} started a new game, word: *_{target_word}_*\n" \
                 f"language: *{context.user_data.get('language')}*\n" \
-                f"hardmode: *{hardmode}*",
+                f"hardmode: *{hardmode}*, board size: *{context.user_data.get('board_size')}*",
             parse_mode='MarkdownV2',
             disable_notification=False
             )
