@@ -4,7 +4,4 @@ wordle_bot_data
 *.ipynb
 *.png
 *.log
-unique_users.json
-used_words_english.json
-used_words_german.json
-used_words_swedish.json
+data/*.json
