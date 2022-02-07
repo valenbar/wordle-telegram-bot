@@ -222,7 +222,11 @@ def main() -> None:
     dispatcher.add_handler(MessageHandler(Filters.text & ~Filters.command, check_word))
 
     if globals.LOG_CHANNEL:
-        updater.bot.send_message(globals.LOG_CHANNEL, "Wordle Bot starting...")
+        updater.bot.send_message(
+            chat_id=globals.LOG_CHANNEL,
+            text="Wordle Bot starting...",
+            disable_notification=True
+        )
     # Start the Bot
     updater.start_polling()
 

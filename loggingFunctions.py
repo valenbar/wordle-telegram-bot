@@ -10,6 +10,9 @@ def log_new_user(update: Update, context: CallbackContext, name: str, id: int, t
         msg = context.bot.send_message(
             chat_id=globals.LOG_CHANNEL,
             text=f"new user: {update.message.from_user.mention_markdown_v2()} \nID: `{update.message.from_user.id}`\nTotal uniqe users: `{total_users}`",
+            parse_mode='MarkdownV2',
+            disable_notification=False
+        )
         context.bot.pin_chat_message(globals.LOG_CHANNEL, msg.message_id, disable_notification=True)
 
 def log_language_change(context: CallbackContext, user: User, language: str) -> None:
@@ -18,7 +21,9 @@ def log_language_change(context: CallbackContext, user: User, language: str) -> 
         context.bot.send_message(
             chat_id=globals.LOG_CHANNEL,
             text=f"{user.mention_markdown_v2()} changed language to _{language}_",
-            parse_mode='MarkdownV2')
+            parse_mode='MarkdownV2',
+            disable_notification=True
+        )
 
 def log_new_game(context: CallbackContext, user: User, target_word: str) -> None:
     hardmode = context.user_data.get('hardmode', False)
@@ -29,7 +34,9 @@ def log_new_game(context: CallbackContext, user: User, target_word: str) -> None
             text=f"{user.mention_markdown_v2()} started a new game, word: *_{target_word}_*\n" \
                 f"language: *{context.user_data.get('language')}*\n" \
                 f"hardmode: *{hardmode}*",
-            parse_mode='MarkdownV2')
+            parse_mode='MarkdownV2',
+            disable_notification=False
+            )
 
 def log_user_guess(context: CallbackContext, user: User, word: str) -> None:
     globals.logger.info(f"{user.first_name} guessed {word}")
@@ -37,7 +44,9 @@ def log_user_guess(context: CallbackContext, user: User, word: str) -> None:
         context.bot.send_message(
             chat_id=globals.LOG_CHANNEL,
             text=f"{user.mention_markdown_v2()} guessed: _{word}_",
-            parse_mode='MarkdownV2')
+            parse_mode='MarkdownV2',
+            disable_notification=True
+        )
 
 def log_user_won(context: CallbackContext, user: User) -> None:
     globals.logger.info(f"{user.first_name} won the game")
@@ -45,7 +54,9 @@ def log_user_won(context: CallbackContext, user: User) -> None:
         context.bot.send_message(
             chat_id=globals.LOG_CHANNEL,
             text=f"{user.mention_markdown_v2()} won the game",
-            parse_mode='MarkdownV2')
+            parse_mode='MarkdownV2',
+            disable_notification=True
+        )
 
 def log_user_lost(context: CallbackContext, user: User, target_word: str) -> None:
     globals.logger.info(f"{user.first_name} lost the game, word: {target_word}")
@@ -53,7 +64,9 @@ def log_user_lost(context: CallbackContext, user: User, target_word: str) -> Non
         context.bot.send_message(
             chat_id=globals.LOG_CHANNEL,
             text=f"{user.mention_markdown_v2()} lost the game, word: *_{target_word}_*",
-            parse_mode='MarkdownV2')
+            parse_mode='MarkdownV2',
+            disable_notification=True
+        )
 
 def log_user_give_up(context: CallbackContext, user: User) -> None:
     globals.logger.info(f"{user.first_name} gave up")
@@ -61,7 +74,9 @@ def log_user_give_up(context: CallbackContext, user: User) -> None:
         context.bot.send_message(
             chat_id=globals.LOG_CHANNEL,
             text=f"{user.mention_markdown_v2()} gave up",
-            parse_mode='MarkdownV2')
+            parse_mode='MarkdownV2',
+            disable_notification=True
+            )
 
 def log_user_command_start(context: CallbackContext, user: User) -> None:
     globals.logger.info(f"{user.first_name} executed /start")
@@ -69,7 +84,9 @@ def log_user_command_start(context: CallbackContext, user: User) -> None:
         context.bot.send_message(
             chat_id=globals.LOG_CHANNEL,
             text=f"{user.mention_markdown_v2()} executed /start",
-            parse_mode='MarkdownV2')
+            parse_mode='MarkdownV2',
+            disable_notification=True
+        )
 
 def log_user_command_help(context: CallbackContext, user: User) -> None:
     globals.logger.info(f"{user.first_name} executed /help")
@@ -77,7 +94,9 @@ def log_user_command_help(context: CallbackContext, user: User) -> None:
         context.bot.send_message(
             chat_id=globals.LOG_CHANNEL,
             text=f"{user.mention_markdown_v2()} executed /help",
-            parse_mode='MarkdownV2')
+            parse_mode='MarkdownV2',
+            disable_notification=True
+        )
 
 def log_user_toggle_hardmode(context: CallbackContext, user: User) -> None:
     hardmode = context.user_data.get('hardmode', False)
@@ -86,7 +105,9 @@ def log_user_toggle_hardmode(context: CallbackContext, user: User) -> None:
         context.bot.send_message(
             chat_id=globals.LOG_CHANNEL,
             text=f"{user.mention_markdown_v2()} toggled hardmode: *{hardmode}*",
-            parse_mode='MarkdownV2')
+            parse_mode='MarkdownV2',
+            disable_notification=True
+        )
 
 def log_user_monti(context: CallbackContext, user: User) -> None:
     globals.logger.info(f"{user.first_name} typed MONTI")
@@ -94,4 +115,6 @@ def log_user_monti(context: CallbackContext, user: User) -> None:
         context.bot.send_message(
             chat_id=globals.LOG_CHANNEL,
             text=f"{user.mention_markdown_v2()} called *MONTI*",
-            parse_mode='MarkdownV2')
+            parse_mode='MarkdownV2',
+            disable_notification=False
+            )
