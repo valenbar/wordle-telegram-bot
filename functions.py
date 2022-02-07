@@ -43,9 +43,9 @@ def image_location(context: CallbackContext) -> str:
 def show_main_menu(update: Update, context: CallbackContext) -> None:
     menu_msg = context.user_data.get("menu_msg")
     if menu_msg is None:
-        menu_msg = update.message.reply_text("Choose an option:", reply_markup=get_main_menu_markup(context))
+        menu_msg = update.message.reply_text("Choose an option:", reply_markup=main_menu_markup)
     else:
-        menu_msg = menu_msg.edit_text("Choose an option:", reply_markup=get_main_menu_markup(context))
+        menu_msg = menu_msg.edit_text("Choose an option:", reply_markup=main_menu_markup)
     context.user_data["menu_msg"] = menu_msg
 
 def show_language_menu(update: Update, context: CallbackContext) -> None:
@@ -64,6 +64,33 @@ def show_language_menu(update: Update, context: CallbackContext) -> None:
             menu_msg = update.message.reply_text("Choose your language:", reply_markup=language_menu_markup)
             pass
     context.user_data["menu_msg"] = menu_msg
+
+def show_game_menu(update: Update, context: CallbackContext) -> None:
+    menu_msg = context.user_data.get('menu_msg')
+    if menu_msg is None:
+        try:
+            menu_msg = update.message.reply_text("Game settings:", reply_markup=language_menu_markup)
+        except Exception as e:
+            print(e)
+            menu_msg = update.callback_query.message.reply_text("Choose your language:", reply_markup=language_menu_markup)
+    else:
+        try:
+            menu_msg = menu_msg.edit_text("Choose your language:", reply_markup=language_menu_markup)
+        except Exception as e:
+            print(e)
+            menu_msg = update.message.reply_text("Choose your language:", reply_markup=language_menu_markup)
+            pass
+    context.user_data["menu_msg"] = menu_msg
+
+def save_feedback(user: User, feedback: str) -> None:
+    try:
+        with open("./data/feedback.json", "r", encoding="utf-8") as f:
+            feedbacks = json.load(f)
+    except FileNotFoundError:
+        feedbacks = []
+    feedbacks.append({"user": user.first_name, "id": user.id, "feedback": feedback})
+    with open("./data/feedback.json", "w", encoding="utf-8") as f:
+        json.dump(feedbacks, f, indent=4, ensure_ascii=False)
 
 def monti_on(update: Update, context: CallbackContext) -> None:
     try:

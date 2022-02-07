@@ -109,6 +109,25 @@ def log_user_toggle_hardmode(context: CallbackContext, user: User) -> None:
             disable_notification=True
         )
 
+def log_board_size_set(context: CallbackContext, user: User, board_size: str) -> None:
+    globals.logger.info(f"{user.first_name} set board size to: {board_size}")
+    if globals.LOG_CHANNEL:
+        context.bot.send_message(
+            chat_id=globals.LOG_CHANNEL,
+            text=f"{user.mention_markdown_v2()} set board size to: *{board_size}*",
+            parse_mode='MarkdownV2',
+            disable_notification=True
+        )
+
+def log_feedback(context: CallbackContext, user: User, feedback: str) -> None:
+    globals.logger.info(f"{user.first_name} submitted feedback: {feedback}")
+    if globals.LOG_CHANNEL:
+        context.bot.send_message(
+            chat_id=globals.LOG_CHANNEL,
+            text=f"{user.first_name} submitted feedback:\n*{feedback}*",
+            disable_notification=False
+        )
+
 def log_user_monti(context: CallbackContext, user: User) -> None:
     globals.logger.info(f"{user.first_name} typed MONTI")
     if globals.LOG_CHANNEL:

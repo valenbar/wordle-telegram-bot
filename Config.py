@@ -3,6 +3,13 @@ short_word_text: str = "The word is too short!"
 long_word_text: str = "The word is too long!"
 bad_word_text: str = "That word is not in the dictionary!"
 
+# menu texts:
+main_menu_text: str = "What do you want to do?"
+settings_menu_text: str = "Choose what game settings you want to change:"
+board_menu_text: str = "Choose the word length:"
+feedback_menu_text: str = "Write your feedback in the chat:"
+feedback_received_text: str = "Thank you for your feedback!"
+
 help_text = "Game rules:\n" \
             "1. You need to guess a 5 letter word.\n" \
             "2. A yellow letter means that the letter is in the word, but in the wrong position.\n" \

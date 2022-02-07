@@ -1,7 +1,8 @@
 #!/usr/bin/env python
 
+from importlib.metadata import entry_points
 from telegram import Update, ForceReply, ParseMode
-from telegram.ext import Updater, CommandHandler, MessageHandler, Filters, CallbackContext, PicklePersistence, CallbackQueryHandler
+from telegram.ext import Updater, CommandHandler, MessageHandler, Filters, CallbackContext, PicklePersistence, CallbackQueryHandler, ConversationHandler
 
 from WordlePlugin import Wordle, GameState
 from markups import *
@@ -22,7 +23,7 @@ def start(update: Update, context: CallbackContext) -> None:
 
     update.message.reply_text(text=config.help_text)
     update.message.reply_text(text=f"Current language: _{context.user_data.get('language')}_", parse_mode='MarkdownV2')
-    context.user_data['menu_msg'] = update.message.reply_text("What do you want to do now?", reply_markup=get_main_menu_markup(context))
+    context.user_data['menu_msg'] = update.message.reply_text("What do you want to do now?", reply_markup=main_menu_markup)
     log_user_command_start(context, update.message.from_user)
 
 
@@ -30,7 +31,7 @@ def help_command(update: Update, context: CallbackContext) -> None:
     """Send a message when the command /help is issued."""
     update.message.reply_text(text=config.help_text)
     update.message.reply_text(text=f"Current language: _{context.user_data.get('language')}_", parse_mode='MarkdownV2')
-    context.user_data['menu_msg'] = update.message.reply_text("What do you want to do now?", reply_markup=get_main_menu_markup(context))
+    context.user_data['menu_msg'] = update.message.reply_text("What do you want to do now?", reply_markup=main_menu_markup)
     log_user_command_help(context, update.message.from_user)
 
 
@@ -130,7 +131,7 @@ def check_word(update: Update, context: CallbackContext) -> None:
                 photo=img,
                 caption=f"You won, the word was: __*_{wordle.target_word}_*__",
                 parse_mode='MarkdownV2')
-            context.user_data["menu_msg"] = update.message.reply_text("What do you want to do now?", reply_markup=get_main_menu_markup(context))
+            context.user_data["menu_msg"] = update.message.reply_text("What do you want to do now?", reply_markup=main_menu_markup)
         elif wordle.state == GameState.LOST:
             log_user_lost(context, update.message.from_user, wordle.target_word)
             img_msg = update.message.reply_photo(
@@ -139,7 +140,7 @@ def check_word(update: Update, context: CallbackContext) -> None:
                 parse_mode='MarkdownV2')
             context.user_data["menu_msg"] = update.message.reply_text(
                 text="What do you want to do now?",
-                reply_markup=get_main_menu_markup(context))
+                reply_markup=main_menu_markup)
         elif wordle.state == GameState.PLAYING:
             context.user_data["img_msg"] = update.message.reply_photo(
                 photo=img,
@@ -176,7 +177,7 @@ def give_up(update: Update, context: CallbackContext) -> None:
     img_msg.edit_caption(
         caption=f"You gave up, the word was: __*_{wordle.target_word}_*__",
         parse_mode='MarkdownV2')
-    context.user_data["menu_msg"] = query.message.reply_text("What do you want to do now?", reply_markup=get_main_menu_markup(context))
+    context.user_data["menu_msg"] = query.message.reply_text("What do you want to do now?", reply_markup=main_menu_markup)
     wordle.state = GameState.INIT
     log_user_give_up(context, update.callback_query.from_user)
 
@@ -195,9 +196,85 @@ def toggle_hardmode(update: Update, context: CallbackContext) -> None:
     context.user_data['hardmode'] = not hardmode
     log_user_toggle_hardmode(context=context, user=update.callback_query.from_user)
     if query.message != None:
-        query.message.edit_reply_markup(reply_markup=get_main_menu_markup(context))
+        query.message.edit_reply_markup(reply_markup=get_settings_menu_markup(context))
     else:
-        context.user_data["menu_msg"] = query.message.reply_text(text="What do you want to do now?", reply_markup=get_main_menu_markup(context))
+        context.user_data["menu_msg"] = query.message.reply_text(text=config.main_menu_text, reply_markup=get_settings_menu_markup(context))
+
+
+def show_settings_menu(update: Update, context: CallbackContext) -> None:
+    """Send a message when the command /settings is issued."""
+    query = update.callback_query
+    query.answer()
+    query.message.edit_text(
+        text=config.settings_menu_text,
+        reply_markup=get_settings_menu_markup(context))
+
+
+def show_board_settings(update: Update, context: CallbackContext) -> None:
+    query = update.callback_query
+    query.answer()
+    update.effective_message.edit_text(
+        text=config.board_menu_text,
+        reply_markup=board_size_menu_markup
+    )
+
+
+def set_board_size(update: Update, context: CallbackContext) -> None:
+    query = update.callback_query
+    query.answer()
+    board_size = query.data.split(":")[1]
+    context.user_data['board_size'] = board_size
+    query.message.edit_text(
+        text=config.main_menu_text,
+        reply_markup=main_menu_markup
+    )
+    log_board_size_set(context, query.from_user, board_size)
+
+
+def show_board_size_menu(update: Update, context: CallbackContext) -> None:
+    query = update.callback_query
+    query.answer()
+    query.message.edit_text(
+        text="Select word length",
+        reply_markup=board_size_menu_markup
+    )
+
+
+def show_main_menu(update: Update, context: CallbackContext) -> None:
+    query = update.callback_query
+    query.answer()
+    query.message.edit_text(
+        text=config.main_menu_text,
+        reply_markup=main_menu_markup
+    )
+
+
+def feedback(update: Update, context: CallbackContext) -> int:
+    query = update.callback_query
+    query.answer()
+    query.message.edit_text(
+        text=config.feedback_menu_text,
+        reply_markup=feedback_menu_markup
+    )
+    return 1
+
+
+def feedback_text(update: Update, context: CallbackContext) -> int:
+    save_feedback(update.message.from_user, update.message.text)
+    log_feedback(context, update.message.from_user, update.message.text)
+    menu_msg = context.user_data.get("menu_msg", None)
+    if menu_msg is not None:
+        menu_msg.edit_text(
+            text=config.feedback_received_text + "\n" + config.main_menu_text,
+            reply_markup=main_menu_markup
+        )
+    else:
+        context.user_data["menu_msg"] = update.message.reply_text(
+            text=config.feedback_received_text + "\n" + config.main_menu_text,
+            reply_markup=main_menu_markup
+        )
+    update.message.delete()
+    return ConversationHandler.END
 
 
 def main() -> None:
@@ -208,15 +285,34 @@ def main() -> None:
     # Get the dispatcher to register handlers
     dispatcher = updater.dispatcher
 
+    feedback_handler = ConversationHandler(
+        entry_points=[CallbackQueryHandler(feedback, pattern="feedback")],
+        states={
+            1: [
+                MessageHandler(Filters.text, feedback_text),
+                CallbackQueryHandler(show_main_menu, pattern="back")
+            ]
+        },
+        fallbacks=[CommandHandler("start", start)]
+    )
+
+    # TODO: switch to conversation handler to have nested menus
     # on different commands - answer in Telegram
     dispatcher.add_handler(CommandHandler("start", start))
     dispatcher.add_handler(CommandHandler("help", help_command))
     dispatcher.add_handler(CommandHandler("new", start_game))
+    dispatcher.add_handler(feedback_handler)
     dispatcher.add_handler(CallbackQueryHandler(set_language, pattern="set_lan:.*"))
     dispatcher.add_handler(CallbackQueryHandler(give_up, pattern="give_up"))
     dispatcher.add_handler(CallbackQueryHandler(start_game, pattern="new_game"))
     dispatcher.add_handler(CallbackQueryHandler(language_select, pattern="change_language"))
     dispatcher.add_handler(CallbackQueryHandler(toggle_hardmode, pattern="hardmode"))
+    dispatcher.add_handler(CallbackQueryHandler(show_settings_menu, pattern="settings_menu"))
+    dispatcher.add_handler(CallbackQueryHandler(show_board_size_menu, pattern="board_size_menu"))
+    dispatcher.add_handler(CallbackQueryHandler(set_board_size, pattern="set_board:.*"))
+    dispatcher.add_handler(CallbackQueryHandler(show_main_menu, pattern="back"))
+    dispatcher.add_handler(CallbackQueryHandler(feedback, pattern="feedback"))
+
 
     # on non command i.e message - echo the message on Telegram
     dispatcher.add_handler(MessageHandler(Filters.text & ~Filters.command, check_word))
