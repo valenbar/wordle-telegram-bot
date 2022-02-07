@@ -124,7 +124,7 @@ def log_feedback(context: CallbackContext, user: User, feedback: str) -> None:
     if globals.LOG_CHANNEL:
         context.bot.send_message(
             chat_id=globals.LOG_CHANNEL,
-            text=f"{user.first_name} submitted feedback:\n*{feedback}*",
+            text=f"{user.first_name} submitted feedback:\n{feedback}",
             disable_notification=False
         )
 
