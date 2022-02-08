@@ -265,10 +265,14 @@ def feedback_text(update: Update, context: CallbackContext) -> int:
     log_feedback(context, update.message.from_user, update.message.text)
     menu_msg = context.user_data.get("menu_msg", None)
     if menu_msg is not None:
-        menu_msg.edit_text(
-            text=config.feedback_received_text + "\n" + config.main_menu_text,
-            reply_markup=main_menu_markup
-        )
+        try:
+            menu_msg.edit_text(
+                text=config.feedback_received_text + "\n" + config.main_menu_text,
+                reply_markup=main_menu_markup
+            )
+        except Exception as e:
+            print(e)
+            pass
     else:
         context.user_data["menu_msg"] = update.message.reply_text(
             text=config.feedback_received_text + "\n" + config.main_menu_text,
