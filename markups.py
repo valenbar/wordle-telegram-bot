@@ -69,7 +69,7 @@ main_menu_markup = InlineKeyboardMarkup(
 feedback_menu_markup = InlineKeyboardMarkup(
     [
         [
-            InlineKeyboardButton("Cancel", callback_data="back")
+            InlineKeyboardButton("Cancel", callback_data="cancel")
         ]
     ]
 )

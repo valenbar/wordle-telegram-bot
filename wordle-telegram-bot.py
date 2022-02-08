@@ -11,7 +11,7 @@ import globals
 from functions import *
 from loggingFunctions import *
 
-def start(update: Update, context: CallbackContext) -> None:
+def start(update: Update, context: CallbackContext) -> int:
     """Send a message when the command /start is issued."""
     handle_new_user(update, context)
 
@@ -25,6 +25,7 @@ def start(update: Update, context: CallbackContext) -> None:
     update.message.reply_text(text=f"Current language: _{context.user_data.get('language')}_", parse_mode='MarkdownV2')
     context.user_data['menu_msg'] = update.message.reply_text("What do you want to do now?", reply_markup=main_menu_markup)
     log_user_command_start(context, update.message.from_user)
+    return ConversationHandler.END
 
 
 def help_command(update: Update, context: CallbackContext) -> None:
@@ -111,7 +112,7 @@ def check_word(update: Update, context: CallbackContext) -> None:
         return
 
     if wordle.state == GameState.WON or wordle.state == GameState.LOST or wordle.state == GameState.INIT or wordle is None:
-        show_main_menu(update, context)
+        show_main_menu(update, context) # TODO: doesnt work when user writes word and no game is running
         return
 
     img = wordle.try_word(update.message.text)
@@ -277,6 +278,16 @@ def feedback_text(update: Update, context: CallbackContext) -> int:
     return ConversationHandler.END
 
 
+def cancel_feedback(update: Update, context: CallbackContext) -> int:
+    query = update.callback_query
+    query.answer()
+    query.message.edit_text(
+        text=config.main_menu_text,
+        reply_markup=main_menu_markup
+    )
+    return ConversationHandler.END
+
+
 def main() -> None:
     """Start the bot."""
     # Create the Updater and pass it your bot's token.
@@ -289,19 +300,21 @@ def main() -> None:
         entry_points=[CallbackQueryHandler(feedback, pattern="feedback")],
         states={
             1: [
-                MessageHandler(Filters.text, feedback_text),
-                CallbackQueryHandler(show_main_menu, pattern="back")
+                MessageHandler(Filters.text & ~Filters.command, feedback_text),
             ]
         },
-        fallbacks=[CommandHandler("start", start)]
+        fallbacks=[
+            CommandHandler("start", start),
+            CallbackQueryHandler(cancel_feedback, pattern="cancel")
+            ]
     )
 
     # TODO: switch to conversation handler to have nested menus
     # on different commands - answer in Telegram
+    dispatcher.add_handler(feedback_handler)
     dispatcher.add_handler(CommandHandler("start", start))
     dispatcher.add_handler(CommandHandler("help", help_command))
     dispatcher.add_handler(CommandHandler("new", start_game))
-    dispatcher.add_handler(feedback_handler)
     dispatcher.add_handler(CallbackQueryHandler(set_language, pattern="set_lan:.*"))
     dispatcher.add_handler(CallbackQueryHandler(give_up, pattern="give_up"))
     dispatcher.add_handler(CallbackQueryHandler(start_game, pattern="new_game"))
