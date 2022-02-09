@@ -123,8 +123,11 @@ def check_word(update: Update, context: CallbackContext) -> None:
 
         img.save(image_location(context))
         img = open(image_location(context), "rb")
-
-        context.user_data.get("img_msg").delete()
+        try:
+            context.user_data.get("img_msg").delete()
+        except Exception as e:
+            globals.logger.info(e)
+            pass
 
         if wordle.state == GameState.WON:
             log_user_won(context, update.message.from_user)
