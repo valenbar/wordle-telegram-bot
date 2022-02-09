@@ -33,4 +33,3 @@ This is how it looks like:
 - [x] Add Feedback option
 - [ ] Notify if guess is in the wrong language
 - [ ] Count game wins/loses per user
-- [ ] Language change starts new game
