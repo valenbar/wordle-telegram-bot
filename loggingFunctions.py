@@ -38,12 +38,22 @@ def log_new_game(context: CallbackContext, user: User, target_word: str) -> None
             disable_notification=False
             )
 
-def log_user_guess(context: CallbackContext, user: User, word: str) -> None:
+def log_user_guess(context: CallbackContext, user: User, word: str, board: str) -> None:
     globals.logger.info(f"{user.first_name} guessed {word}")
     if globals.LOG_CHANNEL:
         context.bot.send_message(
             chat_id=globals.LOG_CHANNEL,
-            text=f"{user.mention_markdown_v2()} guessed: _{word}_",
+            text=f"{user.mention_markdown_v2()} guessed: _{word}_\n{board}",
+            parse_mode='MarkdownV2',
+            disable_notification=True
+        )
+
+def log_user_invalid_guess(context: CallbackContext, user: User, word: str) -> None:
+    globals.logger.info(f"{user.first_name} wrote {word}")
+    if globals.LOG_CHANNEL:
+        context.bot.send_message(
+            chat_id=globals.LOG_CHANNEL,
+            text=f"{user.mention_markdown_v2()} wrote: _{word}_",
             parse_mode='MarkdownV2',
             disable_notification=True
         )

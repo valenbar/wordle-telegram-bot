@@ -117,3 +117,15 @@ class Wordle():
                         self.c_matrix[i][j] = WordleColors.gray
                 else:
                     self.c_matrix[i][j] = WordleColors.gray
+
+    def get_emoji_board(self) -> str:
+        result_string = ""
+        white = "⬜️"
+        green = "🟩"
+        yellow = "🟨"
+        # for i, row in enumerate(self.c_matrix):
+        for i in range(len(self.guessed_words)):
+            for j, col in enumerate(self.c_matrix[i]):
+                result_string = result_string + (white if col == WordleColors.gray else (green if col == WordleColors.green else yellow))
+            result_string = result_string + "\n"
+        return result_string

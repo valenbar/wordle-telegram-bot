@@ -93,6 +93,7 @@ def check_word(update: Update, context: CallbackContext) -> None:
 
     # remove message with forbidden chars
     if any(c not in globals.alphabet for c in update.message.text):
+        log_user_invalid_guess(context, update.message.from_user, update.message.text)
         img_msg = context.user_data.get("img_msg")
         try: img_msg.edit_caption(caption=config.bad_word_text, reply_markup=give_up_markup)
         except: pass
@@ -105,18 +106,20 @@ def check_word(update: Update, context: CallbackContext) -> None:
         start_game(update, context)
         return
 
-    log_user_guess(context, update.message.from_user, update.message.text)
     wordle = context.user_data.get("wordle", None)
     if wordle == None:
+        log_user_invalid_guess(context, update.message.from_user, update.message.text)
         start(update, context)
         return
 
     if wordle.state == GameState.WON or wordle.state == GameState.LOST or wordle.state == GameState.INIT or wordle is None:
+        log_user_invalid_guess(context, update.message.from_user, update.message.text)
         show_main_menu(update, context) # TODO: doesnt work when user writes word and no game is running
         return
 
     img = wordle.try_word(update.message.text)
     if img is not None:
+        log_user_guess(context, update.message.from_user, update.message.text, wordle.get_emoji_board())
 
         # easteregg
         img = flip_image(context, img)
@@ -152,6 +155,7 @@ def check_word(update: Update, context: CallbackContext) -> None:
                 reply_markup=give_up_markup)
         img.close()
     else:
+        log_user_invalid_guess(context, update.message.from_user, update.message.text)
         if wordle.state == GameState.PLAYING:
             img_msg = context.user_data["img_msg"]
             if img_msg is None:
