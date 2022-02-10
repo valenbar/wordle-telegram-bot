@@ -19,7 +19,7 @@ class ImageExport():
 
     board_x: int
     board_y: int
-    alphabet = "abcdefghijklmnopqrstuvwxyzäöüABCDEFGHIJKLMNOPQRSTUVWXYZÄÖÜ"+"Åå"
+    alphabet = "abcdefghijklmnopqrstuvwxyzßäöüABCDEFGHIJKLMNOPQRSTUVWXYZÄÖÜẞ"+"Åå"
 
     def __init__(self, x: int, y: int):
         self.board_x = x

@@ -55,7 +55,7 @@ class Wordle():
 
 
     def try_word(self, word: str):
-        word = word.upper()
+        word = word.replace('ß', 'ẞ').upper()
         try:
             with open(f"data/used_words_{self.language}.json", "r", encoding="utf-8") as f:
                 used_words = json.load(f)
