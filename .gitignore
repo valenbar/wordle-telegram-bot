@@ -4,4 +4,6 @@ wordle_bot_data
 *.ipynb
 *.png
 *.log
-data/*.json
+data/*
+misc/*
+img/*
