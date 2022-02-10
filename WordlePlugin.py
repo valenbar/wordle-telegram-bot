@@ -33,9 +33,9 @@ class Wordle():
 
     def __init__(self, language: str) -> None:
         self.language = language
-        with open(f"./assets/wordle_dict_{language}.json", "r", encoding="utf-8") as f:
+        with open(f"./assets/wordle_dict_{language}_big.json", "r", encoding="utf-8") as f:
             self.wordle_dict = json.load(f)
-        with open(f"./assets/wordle_dict_10k_{language}.json", "r", encoding="utf-8") as f:
+        with open(f"./assets/wordle_dict_{language}_small.json", "r", encoding="utf-8") as f:
             self.wordle_dict_small = json.load(f)
 
 
