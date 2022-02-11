@@ -15,7 +15,6 @@ def start(update: Update, context: CallbackContext) -> int:
     """Send a message when the command /start is issued."""
     handle_new_user(update, context)
 
-    context.user_data["name"] = update.message.from_user.first_name
     context.user_data["user_id"] = update.message.from_user.id
     context.user_data["language"] = "english"
     context.user_data["board_size"] = "5x6"
@@ -89,8 +88,6 @@ def start_game(update: Update, context: CallbackContext) -> None:
 
 
 def check_word(update: Update, context: CallbackContext) -> None:
-    context.user_data['name'] = update.message.from_user.first_name
-
     # remove message with forbidden chars
     if any(c not in globals.alphabet for c in update.message.text):
         log_user_invalid_guess(context, update.message.from_user, update.message.text)
