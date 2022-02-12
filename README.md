@@ -35,3 +35,4 @@ This is how it looks like:
 - [ ] Count game wins/loses per user
 - [ ] Option to report a bad word after the game
 - [ ] Sync guessed words dictionary to google spreadsheet
+- [ ] Option to get a hint on the last guess, e.g. an example sentence or the definition 
