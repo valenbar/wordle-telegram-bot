@@ -296,6 +296,15 @@ def cancel_feedback(update: Update, context: CallbackContext) -> int:
     return ConversationHandler.END
 
 
+def handle_get_hint(update: Update, context: CallbackContext) -> None:
+    query = update.callback_query
+    query.answer()
+    wordle = context.user_data.get("wordle", None)
+    if wordle != None:
+        hint = wordle.get_hint()
+        query.message.reply_text(text=hint)
+
+
 def main() -> None:
     """Start the bot."""
     # Create the Updater and pass it your bot's token.
@@ -325,6 +334,7 @@ def main() -> None:
     dispatcher.add_handler(CommandHandler("new", start_game))
     dispatcher.add_handler(CallbackQueryHandler(set_language, pattern="set_lan:.*"))
     dispatcher.add_handler(CallbackQueryHandler(give_up, pattern="give_up"))
+    dispatcher.add_handler(CallbackQueryHandler(handle_get_hint, pattern="get_hint"))
     dispatcher.add_handler(CallbackQueryHandler(start_game, pattern="new_game"))
     dispatcher.add_handler(CallbackQueryHandler(language_select, pattern="change_language"))
     dispatcher.add_handler(CallbackQueryHandler(toggle_hardmode, pattern="hardmode"))
