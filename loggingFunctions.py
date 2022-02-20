@@ -138,6 +138,15 @@ def log_feedback(context: CallbackContext, user: User, feedback: str) -> None:
             disable_notification=False
         )
 
+def log_hint(context: CallbackContext, user: User, hint: str) -> None:
+    globals.logger.info(f"{user.first_name} used hint: {hint}")
+    if globals.LOG_CHANNEL:
+        context.bot.send_message(
+            chat_id=globals.LOG_CHANNEL,
+            text=f"{user.first_name} used hint:\n{hint}",
+            disable_notification=True
+        )
+
 def log_user_monti(context: CallbackContext, user: User) -> None:
     globals.logger.info(f"{user.first_name} typed MONTI")
     if globals.LOG_CHANNEL:

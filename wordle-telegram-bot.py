@@ -303,6 +303,7 @@ def handle_get_hint(update: Update, context: CallbackContext) -> None:
     if wordle != None:
         hint = wordle.get_hint()
         query.message.reply_text(text=hint)
+        log_hint(context, update.callback_query.from_user, hint)
 
 
 def main() -> None:
