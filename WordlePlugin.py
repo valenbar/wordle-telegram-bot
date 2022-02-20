@@ -129,3 +129,19 @@ class Wordle():
                 result_string = result_string + (white if col == WordleColors.gray else (green if col == WordleColors.green else yellow))
             result_string = result_string + "\n"
         return result_string
+
+    def get_hint(self) -> str:
+        if not (self.language == "german" or self.language == "english"):
+            return "hint not supported for this language"
+
+        with open(f"./assets/word_hint_data_censored_{self.language}.json", "r", encoding="utf-8") as f:
+            data = json.load(f)
+        if data.get(self.target_word, None) == None:
+            return "no hint available for this word"
+        if data[self.target_word]["example"] != None:
+            example = data[self.target_word]["example"]
+            return str("Example sentence:\n" + example)
+        else:
+            definition = data[self.target_word]["definition"]
+            return str("Definition:\n" + definition)
+

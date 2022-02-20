@@ -79,7 +79,7 @@ def start_game(update: Update, context: CallbackContext) -> None:
             photo=img,
             caption=f"language: _{context.user_data.get('language', 'not sure')}_, hardmode: _{hardmode}_, *Good luck\!*",
             parse_mode='MarkdownV2',
-            reply_markup=give_up_markup)
+            reply_markup=ingame_markup)
     context.user_data["img_msg"] = img_msg
 
     if query == None:
@@ -92,7 +92,7 @@ def check_word(update: Update, context: CallbackContext) -> None:
     if any(c not in globals.alphabet for c in update.message.text):
         log_user_invalid_guess(context, update.message.from_user, update.message.text)
         img_msg = context.user_data.get("img_msg")
-        try: img_msg.edit_caption(caption=config.bad_word_text, reply_markup=give_up_markup)
+        try: img_msg.edit_caption(caption=config.bad_word_text, reply_markup=ingame_markup)
         except: pass
         update.message.delete()
         return
@@ -149,7 +149,7 @@ def check_word(update: Update, context: CallbackContext) -> None:
             context.user_data["img_msg"] = update.message.reply_photo(
                 photo=img,
                 caption=config.good_word_text,
-                reply_markup=give_up_markup)
+                reply_markup=ingame_markup)
         img.close()
     else:
         log_user_invalid_guess(context, update.message.from_user, update.message.text)
@@ -158,13 +158,13 @@ def check_word(update: Update, context: CallbackContext) -> None:
             if img_msg is None:
                 print("message not found")
             elif len(update.message.text) < len(wordle.target_word):
-                try: img_msg.edit_caption(caption=config.short_word_text, reply_markup=give_up_markup)
+                try: img_msg.edit_caption(caption=config.short_word_text, reply_markup=ingame_markup)
                 except: pass
             elif len(update.message.text) > len(wordle.target_word):
-                try: img_msg.edit_caption(caption=config.long_word_text, reply_markup=give_up_markup)
+                try: img_msg.edit_caption(caption=config.long_word_text, reply_markup=ingame_markup)
                 except: pass
             elif len(update.message.text) == len(wordle.target_word):
-                try: img_msg.edit_caption(caption=config.bad_word_text, reply_markup=give_up_markup)
+                try: img_msg.edit_caption(caption=config.bad_word_text, reply_markup=ingame_markup)
                 except: pass
             update.message.delete()
 
@@ -296,6 +296,15 @@ def cancel_feedback(update: Update, context: CallbackContext) -> int:
     return ConversationHandler.END
 
 
+def handle_get_hint(update: Update, context: CallbackContext) -> None:
+    query = update.callback_query
+    query.answer()
+    wordle = context.user_data.get("wordle", None)
+    if wordle != None:
+        hint = wordle.get_hint()
+        query.message.reply_text(text=hint)
+
+
 def main() -> None:
     """Start the bot."""
     # Create the Updater and pass it your bot's token.
@@ -325,6 +334,7 @@ def main() -> None:
     dispatcher.add_handler(CommandHandler("new", start_game))
     dispatcher.add_handler(CallbackQueryHandler(set_language, pattern="set_lan:.*"))
     dispatcher.add_handler(CallbackQueryHandler(give_up, pattern="give_up"))
+    dispatcher.add_handler(CallbackQueryHandler(handle_get_hint, pattern="get_hint"))
     dispatcher.add_handler(CallbackQueryHandler(start_game, pattern="new_game"))
     dispatcher.add_handler(CallbackQueryHandler(language_select, pattern="change_language"))
     dispatcher.add_handler(CallbackQueryHandler(toggle_hardmode, pattern="hardmode"))

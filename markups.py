@@ -15,10 +15,11 @@ language_menu_markup = InlineKeyboardMarkup(
         ]
     ])
 
-give_up_markup = InlineKeyboardMarkup(
+ingame_markup = InlineKeyboardMarkup(
     [
         [
-            InlineKeyboardButton("Give up", callback_data="give_up")
+            InlineKeyboardButton("Give up", callback_data="give_up"),
+            InlineKeyboardButton("Get hint", callback_data="get_hint"),
         ]
     ])
 
