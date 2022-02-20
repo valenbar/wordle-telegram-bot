@@ -79,7 +79,7 @@ def start_game(update: Update, context: CallbackContext) -> None:
             photo=img,
             caption=f"language: _{context.user_data.get('language', 'not sure')}_, hardmode: _{hardmode}_, *Good luck\!*",
             parse_mode='MarkdownV2',
-            reply_markup=give_up_markup)
+            reply_markup=ingame_markup)
     context.user_data["img_msg"] = img_msg
 
     if query == None:
@@ -92,7 +92,7 @@ def check_word(update: Update, context: CallbackContext) -> None:
     if any(c not in globals.alphabet for c in update.message.text):
         log_user_invalid_guess(context, update.message.from_user, update.message.text)
         img_msg = context.user_data.get("img_msg")
-        try: img_msg.edit_caption(caption=config.bad_word_text, reply_markup=give_up_markup)
+        try: img_msg.edit_caption(caption=config.bad_word_text, reply_markup=ingame_markup)
         except: pass
         update.message.delete()
         return
@@ -149,7 +149,7 @@ def check_word(update: Update, context: CallbackContext) -> None:
             context.user_data["img_msg"] = update.message.reply_photo(
                 photo=img,
                 caption=config.good_word_text,
-                reply_markup=give_up_markup)
+                reply_markup=ingame_markup)
         img.close()
     else:
         log_user_invalid_guess(context, update.message.from_user, update.message.text)
@@ -158,13 +158,13 @@ def check_word(update: Update, context: CallbackContext) -> None:
             if img_msg is None:
                 print("message not found")
             elif len(update.message.text) < len(wordle.target_word):
-                try: img_msg.edit_caption(caption=config.short_word_text, reply_markup=give_up_markup)
+                try: img_msg.edit_caption(caption=config.short_word_text, reply_markup=ingame_markup)
                 except: pass
             elif len(update.message.text) > len(wordle.target_word):
-                try: img_msg.edit_caption(caption=config.long_word_text, reply_markup=give_up_markup)
+                try: img_msg.edit_caption(caption=config.long_word_text, reply_markup=ingame_markup)
                 except: pass
             elif len(update.message.text) == len(wordle.target_word):
-                try: img_msg.edit_caption(caption=config.bad_word_text, reply_markup=give_up_markup)
+                try: img_msg.edit_caption(caption=config.bad_word_text, reply_markup=ingame_markup)
                 except: pass
             update.message.delete()
 
