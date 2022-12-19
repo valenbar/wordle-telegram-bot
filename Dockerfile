@@ -1,8 +1,8 @@
 FROM python:3
 
-ADD wordle-telegram-bot.py /
+WORKDIR /app
 
-COPY ./ /
+COPY . .
 
 RUN pip install -r requirements.txt
 

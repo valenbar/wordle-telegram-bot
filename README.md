@@ -14,9 +14,31 @@ This is how it looks like:
 
 ## Setup
 
-- Configure [example.env](https://github.com/valenbar/wordle-telegram-bot/blob/main/example.env)
-- run `pip install -r requirements.txt`
-- run `python wordle-telegram-bot.py`
+Clone repository:
+
+    git clone https://github.com/valenbar/wordle-telegram-bot
+
+Configure [example.env](https://github.com/valenbar/wordle-telegram-bot/blob/main/example.env)
+
+    cd wordle-telegram-bot
+
+#### Without Docker
+
+Install python requirements
+
+    pip install -r requirements.txt
+
+Start the program
+
+    python wordle-telegram-bot.py
+
+#### With Docker
+
+```bash
+docker build -t wordle_telegram_bot .
+docker volume create wordle_data
+docker run -d -v wordle_data:/app --name wordle_app wordle_telegram_bot
+```
 
 ## TODO
 
@@ -35,4 +57,4 @@ This is how it looks like:
 - [ ] Count game wins/loses per user
 - [ ] Option to report a bad word after the game
 - [ ] Sync guessed words dictionary to google spreadsheet
-- [ ] Option to get a hint on the last guess, e.g. an example sentence or the definition 
+- [ ] Option to get a hint on the last guess, e.g. an example sentence or the definition
