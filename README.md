@@ -6,9 +6,8 @@ Try it out: [@TheWordleBot](https://www.t.me/TheWordleBot)
 
 This is how it looks like:
 
-![example_3.png](https://github.com/valenbar/wordle-telegram-bot/blob/main/assets/example_3.png?raw=true) | ![example_2.png](https://github.com/valenbar/wordle-telegram-bot/blob/main/assets/example_2.png?raw=true)
-:----|----:
-![example_1.png](https://github.com/valenbar/wordle-telegram-bot/blob/main/assets/example_1.png?raw=true) | ![example_4.png](https://github.com/valenbar/wordle-telegram-bot/blob/main/assets/example_4.png?raw=true)
+![example_3.png](https://github.com/valenbar/wordle-telegram-bot/blob/main/assets/example_3.png?raw=true) | ![example_2.png](https://github.com/valenbar/wordle-telegram-bot/blob/main/assets/example_2.png?raw=true) | ![example_1.png](https://github.com/valenbar/wordle-telegram-bot/blob/main/assets/example_1.png?raw=true) | ![example_4.png](https://github.com/valenbar/wordle-telegram-bot/blob/main/assets/example_4.png?raw=true)
+:----|----|----|----:
 
 ## Features
 - Play as many games as you want
@@ -55,8 +54,8 @@ docker run -d -v wordle_data:/app --name wordle_app wordle_telegram_bot
 - [x] Add Hard-mode
 - [x] Option to change board size
 - [x] Add Feedback option
+- [x] Option to get a hint, e.g. an example sentence or the definition
 - [ ] Notify if guess is in the wrong language
 - [ ] Count game wins/loses per user
 - [ ] Option to report a bad word after the game
 - [ ] Sync guessed words dictionary to google spreadsheet
-- [ ] Option to get a hint on the last guess, e.g. an example sentence or the definition
