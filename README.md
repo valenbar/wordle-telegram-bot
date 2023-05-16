@@ -59,3 +59,4 @@ docker run -d -v wordle_data:/app --name wordle_app wordle_telegram_bot
 - [ ] Count game wins/loses per user
 - [ ] Option to report a bad word after the game
 - [ ] Sync guessed words dictionary to google spreadsheet
+- [ ] Error handling when pickled data is corrupted
