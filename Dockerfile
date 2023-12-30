@@ -6,4 +6,4 @@ COPY . .
 
 RUN pip install -r requirements.txt
 
-CMD ["python", "./wordle-telegram-bot.py"]
+CMD ["python", "wordle-telegram-bot.py"]
