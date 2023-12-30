@@ -1,0 +1,8 @@
+version: '3'
+services:
+  wordle-telegram-bot:
+    container_name: wordle-telegram-bot
+    build: .
+    volumes:
+      - ./wordle_data_unso:/app
+    command: ["python", "wordle-telegram-bot.py"]
