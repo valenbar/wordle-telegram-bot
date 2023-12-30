@@ -309,7 +309,7 @@ def handle_get_hint(update: Update, context: CallbackContext) -> None:
 def main() -> None:
     """Start the bot."""
     # Create the Updater and pass it your bot's token.
-    updater = Updater(globals.API_TOKEN, persistence=PicklePersistence(filename="wordle_bot_data"))
+    updater = Updater(globals.API_TOKEN, persistence=PicklePersistence(filename="./data/wordle_bot_data"))
 
     # Get the dispatcher to register handlers
     dispatcher = updater.dispatcher
