@@ -7,4 +7,4 @@ wordle_bot_data
 data/*
 misc/*
 img/*
-compose.yml
+compose.yaml

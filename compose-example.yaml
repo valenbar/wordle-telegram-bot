@@ -1,0 +1,16 @@
+services:
+  wordle:
+    container_name: wordle-telegram-bot
+    build: 
+      context: https://github.com/valenbar/wordle-telegram-bot.git
+      dockerfile: Dockerfile
+    volumes:
+      # where to store persistent data
+      - ~/docker/appdata/wordle-telegram-bot/data:/wordle/data
+    # env_file: .env
+    environment:
+      # The token you get from botfather
+      API_TOKEN: "" 
+      # The channel id of the telegram channel that you want to use for logging
+      # leave empty if you don't want to use that
+      LOG_CHANNEL: ""
