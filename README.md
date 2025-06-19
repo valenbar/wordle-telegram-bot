@@ -35,10 +35,37 @@ Start the program
 
 #### With Docker
 
+##### Docker Compose
+
+```yaml
+services:
+  wordle:
+    container_name: wordle-telegram-bot
+    build: 
+      context: https://github.com/valenbar/wordle-telegram-bot.git
+      dockerfile: Dockerfile
+    volumes:
+      # where to store persistent data
+      - </path/to/data>:/wordle/data
+    # env_file: .env
+    environment:
+      # The token you get from botfather
+      API_TOKEN: "" 
+      # The channel id of the telegram channel that you want to use for logging
+      # leave empty if you don't want to use that
+      LOG_CHANNEL: ""
+```
+
+##### Docker Run
 ```bash
-docker build -t wordle_telegram_bot .
-docker volume create wordle_data
-docker run -d -v wordle_data:/app --name wordle_app wordle_telegram_bot
+docker build -t wordle-telegram-bot .
+
+docker run -d \
+  -v </path/to/data>:/wordle/data \
+  --name wordle-telegram-bot \
+  -e API_TOKEN="" \
+  -e LOG_CHANNEL="" \
+  wordle-telegram-bot
 ```
 
 ## TODO
