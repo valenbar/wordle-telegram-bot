@@ -1,0 +1,10 @@
+services:
+  wordle:
+    container_name: wordle-telegram-bot
+    build: .
+    volumes:
+      - ~/docker/appdata/wordle-telegram-bot/data:/wordle/data
+    env_file: .env
+    # environment:
+    #   API_TOKEN: ""
+    #   LOG_CHANNEL: ""
